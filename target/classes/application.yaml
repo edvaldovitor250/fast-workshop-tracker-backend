@@ -1,3 +1,34 @@
 spring:
   application:
     name: workshop-tracker
+  datasource:
+    url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:workshop_tracker}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USER:workshop}
+    password: ${DB_PASSWORD:workshop}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+server:
+  port: ${SERVER_PORT:8080}
+
+api:
+  security:
+    jwt:
+      secret: ${API_JWT_SECRET:change-me-in-production-change-me-in-production}
+      issuer: ${API_JWT_ISSUER:workshop-tracker}
+      ttl: ${API_JWT_TTL:PT2H}
