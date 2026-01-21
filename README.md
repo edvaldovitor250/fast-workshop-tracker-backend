@@ -40,6 +40,13 @@ Config padrão do `compose.yaml`:
 Se a porta `8080` já estiver em uso, rode com:
 - PowerShell: `$env:SERVER_PORT=8081; ./mvnw spring-boot:run`
 
+## Executar sem MySQL (H2 em memória)
+
+Se você não quiser subir o MySQL via Docker, existe o profile `local` que usa H2 em memória (modo MySQL) + Flyway:
+
+- PowerShell: `./mvnw spring-boot:run "-Dspring-boot.run.profiles=local"`
+- Bash/Zsh: `./mvnw spring-boot:run -Dspring-boot.run.profiles=local`
+
 Variáveis opcionais (se quiser sobrescrever):
 - `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`
 - `API_JWT_SECRET`, `API_JWT_ISSUER`, `API_JWT_TTL`
