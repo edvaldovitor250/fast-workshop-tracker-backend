@@ -2,7 +2,7 @@ package br.com.fast.workshoptracker.api.controller;
 
 import br.com.fast.workshoptracker.api.dto.request.WorkshopCreateRequest;
 import br.com.fast.workshoptracker.api.dto.response.WorkshopResponse;
-import br.com.fast.workshoptracker.api.openapi.WorkshopApi;
+import br.com.fast.workshoptracker.api.openapi.api.WorkshopApi;
 import br.com.fast.workshoptracker.application.service.WorkshopService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

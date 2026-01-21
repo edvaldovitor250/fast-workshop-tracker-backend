@@ -1,13 +1,8 @@
 package br.com.fast.workshoptracker.api.controller;
 
-import br.com.fast.workshoptracker.api.dto.request.AtaAddColaboradorRequest;
-import br.com.fast.workshoptracker.api.dto.request.AtaCreateRequest;
-import br.com.fast.workshoptracker.api.dto.response.AtaResponse;
-import br.com.fast.workshoptracker.api.dto.response.ColaboradorParticipacoesResponse;
-import br.com.fast.workshoptracker.api.openapi.AtaApi;
-import br.com.fast.workshoptracker.application.service.AtaService;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +12,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
-import java.util.List;
+import br.com.fast.workshoptracker.api.dto.request.AtaAddColaboradorRequest;
+import br.com.fast.workshoptracker.api.dto.request.AtaCreateRequest;
+import br.com.fast.workshoptracker.api.dto.response.AtaResponse;
+import br.com.fast.workshoptracker.api.dto.response.ColaboradorParticipacoesResponse;
+import br.com.fast.workshoptracker.api.openapi.api.AtaApi;
+import br.com.fast.workshoptracker.application.service.AtaService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor

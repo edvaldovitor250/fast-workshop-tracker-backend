@@ -1,2 +1,3 @@
 br\com\fast\workshoptracker\WorkshopTrackerIntegrationTest.class
 br\com\fast\workshoptracker\WorkshopTrackerApplicationTests.class
+br\com\fast\workshoptracker\application\service\AtaServiceTest.class

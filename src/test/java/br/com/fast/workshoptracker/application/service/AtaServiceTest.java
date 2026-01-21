@@ -95,12 +95,65 @@ class AtaServiceTest {
 		setId(ata, 2L);
 		ata.getColaboradores().add(colaborador);
 
-		when(workshopRepository.existsById(1L)).thenReturn(true);
 		when(ataRepository.findByIdAndWorkshopId(2L, 1L)).thenReturn(Optional.of(ata));
 		when(colaboradorRepository.findById(10L)).thenReturn(Optional.of(colaborador));
 
 		BusinessException ex = assertThrows(BusinessException.class, () -> ataService.addColaborador(1L, 2L, new AtaAddColaboradorRequest(10L)));
 		assertEquals(BusinessErrorCode.BUS_002_CONFLICT, ex.getErrorCode());
+
+		verify(workshopRepository, never()).existsById(anyLong());
+	}
+
+	@Test
+	void addColaborador_quandoAtaNaoEncontradaEWorkshopInexistente_deveRetornar404() {
+		when(ataRepository.findByIdAndWorkshopId(2L, 1L)).thenReturn(Optional.empty());
+		when(workshopRepository.existsById(1L)).thenReturn(false);
+
+		BusinessException ex = assertThrows(BusinessException.class, () -> ataService.addColaborador(1L, 2L, new AtaAddColaboradorRequest(10L)));
+		assertEquals(BusinessErrorCode.BUS_001_NOT_FOUND, ex.getErrorCode());
+
+		verify(colaboradorRepository, never()).findById(anyLong());
+	}
+
+	@Test
+	void addColaborador_quandoAtaNaoEncontradaEWorkshopExiste_deveRetornar404() {
+		when(ataRepository.findByIdAndWorkshopId(2L, 1L)).thenReturn(Optional.empty());
+		when(workshopRepository.existsById(1L)).thenReturn(true);
+
+		BusinessException ex = assertThrows(BusinessException.class, () -> ataService.addColaborador(1L, 2L, new AtaAddColaboradorRequest(10L)));
+		assertEquals(BusinessErrorCode.BUS_001_NOT_FOUND, ex.getErrorCode());
+
+		verify(colaboradorRepository, never()).findById(anyLong());
+	}
+
+	@Test
+	void removeColaborador_quandoColaboradorInexistente_deveRetornar404() {
+		Workshop workshop = new Workshop("WS", LocalDate.of(2026, 1, 20));
+		setId(workshop, 1L);
+
+		Ata ata = new Ata(workshop);
+		setId(ata, 2L);
+
+		when(ataRepository.findById(2L)).thenReturn(Optional.of(ata));
+		when(colaboradorRepository.existsById(10L)).thenReturn(false);
+
+		BusinessException ex = assertThrows(BusinessException.class, () -> ataService.removeColaborador(2L, 10L));
+		assertEquals(BusinessErrorCode.BUS_001_NOT_FOUND, ex.getErrorCode());
+	}
+
+	@Test
+	void removeColaborador_quandoColaboradorNaoPresenteNaAta_deveRetornar404() {
+		Workshop workshop = new Workshop("WS", LocalDate.of(2026, 1, 20));
+		setId(workshop, 1L);
+
+		Ata ata = new Ata(workshop);
+		setId(ata, 2L);
+
+		when(ataRepository.findById(2L)).thenReturn(Optional.of(ata));
+		when(colaboradorRepository.existsById(10L)).thenReturn(true);
+
+		BusinessException ex = assertThrows(BusinessException.class, () -> ataService.removeColaborador(2L, 10L));
+		assertEquals(BusinessErrorCode.BUS_001_NOT_FOUND, ex.getErrorCode());
 	}
 
 	private static void setId(Object entity, Long id) {

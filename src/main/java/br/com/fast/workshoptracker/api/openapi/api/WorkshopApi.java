@@ -1,4 +1,4 @@
-package br.com.fast.workshoptracker.api.openapi;
+package br.com.fast.workshoptracker.api.openapi.api;
 
 import br.com.fast.workshoptracker.api.dto.request.WorkshopCreateRequest;
 import br.com.fast.workshoptracker.api.dto.response.ErrorResponse;

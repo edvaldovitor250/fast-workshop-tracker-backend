@@ -1,17 +1,18 @@
 package br.com.fast.workshoptracker.api.controller;
 
-import br.com.fast.workshoptracker.api.dto.request.AuthLoginRequest;
-import br.com.fast.workshoptracker.api.dto.request.AuthRegisterRequest;
-import br.com.fast.workshoptracker.api.dto.response.AuthTokenResponse;
-import br.com.fast.workshoptracker.api.dto.response.UsuarioResponse;
-import br.com.fast.workshoptracker.api.openapi.AuthApi;
-import br.com.fast.workshoptracker.application.service.AuthService;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import br.com.fast.workshoptracker.api.dto.request.AuthLoginRequest;
+import br.com.fast.workshoptracker.api.dto.request.AuthRegisterRequest;
+import br.com.fast.workshoptracker.api.dto.response.AuthTokenResponse;
+import br.com.fast.workshoptracker.api.dto.response.UsuarioResponse;
+import br.com.fast.workshoptracker.api.openapi.api.AuthApi;
+import br.com.fast.workshoptracker.application.service.AuthService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor

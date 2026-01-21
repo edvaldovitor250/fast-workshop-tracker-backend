@@ -19,9 +19,11 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 @Service
@@ -34,6 +36,7 @@ public class AuthService {
 	private final UsuarioRepository usuarioRepository;
 	private final UsuarioMapper usuarioMapper;
 
+	@Transactional
 	public UsuarioResponse register(AuthRegisterRequest request) {
 		String email = normalizeEmail(request.email());
 		if (usuarioRepository.existsByEmailIgnoreCase(email)) {
@@ -50,6 +53,7 @@ public class AuthService {
 		return usuarioMapper.toResponse(usuario);
 	}
 
+	@Transactional(readOnly = true)
 	public AuthTokenResponse login(AuthLoginRequest request) {
 		String email = normalizeEmail(request.email());
 		Usuario usuario = usuarioRepository.findByEmailIgnoreCase(email)
@@ -82,6 +86,6 @@ public class AuthService {
 		if (email == null) {
 			return null;
 		}
-		return email.trim().toLowerCase();
+		return email.trim().toLowerCase(Locale.ROOT);
 	}
 }

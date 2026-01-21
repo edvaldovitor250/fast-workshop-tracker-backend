@@ -60,12 +60,12 @@ public class AtaService {
 		List<Long> colaboradoresIds = request.colaboradoresIds();
 		if (colaboradoresIds != null && !colaboradoresIds.isEmpty()) {
 			List<Colaborador> colaboradores = colaboradorRepository.findAllById(colaboradoresIds);
-			if (colaboradores.size() != new HashSet<>(colaboradoresIds).size()) {
-				Set<Long> found = new HashSet<>(colaboradores.size());
+			if (colaboradores.size() != colaboradoresIds.size()) {
+				Set<Long> foundIds = new HashSet<>(colaboradores.size());
 				for (Colaborador c : colaboradores) {
-					found.add(c.getId());
+					foundIds.add(c.getId());
 				}
-				List<Long> missing = colaboradoresIds.stream().distinct().filter(id -> !found.contains(id)).toList();
+				List<Long> missing = colaboradoresIds.stream().filter(id -> !foundIds.contains(id)).toList();
 				throw Exceptions.notFound(
 						"Colaboradores não encontrados: ids=" + missing,
 						ExceptionUtils.context("colaboradoresIds", missing)
@@ -80,18 +80,19 @@ public class AtaService {
 
 	@Transactional
 	public AtaResponse addColaborador(Long workshopId, Long ataId, AtaAddColaboradorRequest request) {
-		if (!workshopRepository.existsById(workshopId)) {
+		Ata ata = ataRepository.findByIdAndWorkshopId(ataId, workshopId).orElse(null);
+		if (ata == null) {
+			if (!workshopRepository.existsById(workshopId)) {
+				throw Exceptions.notFound(
+						"Workshop não encontrado: id=" + workshopId,
+						ExceptionUtils.context("workshopId", workshopId)
+				);
+			}
 			throw Exceptions.notFound(
-					"Workshop não encontrado: id=" + workshopId,
-					ExceptionUtils.context("workshopId", workshopId)
+					"Ata não encontrada para o workshop: ataId=" + ataId + ", workshopId=" + workshopId,
+					ExceptionUtils.context("ataId", ataId, "workshopId", workshopId)
 			);
 		}
-
-		Ata ata = ataRepository.findByIdAndWorkshopId(ataId, workshopId)
-				.orElseThrow(() -> Exceptions.notFound(
-						"Ata não encontrada para o workshop: ataId=" + ataId + ", workshopId=" + workshopId,
-						ExceptionUtils.context("ataId", ataId, "workshopId", workshopId)
-				));
 
 		Colaborador colaborador = colaboradorRepository.findById(request.colaboradorId())
 				.orElseThrow(() -> Exceptions.notFound(
@@ -107,7 +108,6 @@ public class AtaService {
 			);
 		}
 
-		ata = ataRepository.save(ata);
 		return ataMapper.toResponse(ata);
 	}
 
@@ -119,21 +119,20 @@ public class AtaService {
 						ExceptionUtils.context("ataId", ataId)
 				));
 
-		Colaborador colaborador = colaboradorRepository.findById(colaboradorId)
-				.orElseThrow(() -> Exceptions.notFound(
-						"Colaborador não encontrado: id=" + colaboradorId,
-						ExceptionUtils.context("colaboradorId", colaboradorId)
-				));
+		if (!colaboradorRepository.existsById(colaboradorId)) {
+			throw Exceptions.notFound(
+					"Colaborador não encontrado: id=" + colaboradorId,
+					ExceptionUtils.context("colaboradorId", colaboradorId)
+			);
+		}
 
-		boolean removed = ata.getColaboradores().removeIf(c -> Objects.equals(c.getId(), colaborador.getId()));
+		boolean removed = ata.getColaboradores().removeIf(c -> Objects.equals(c.getId(), colaboradorId));
 		if (!removed) {
 			throw Exceptions.notFound(
 					"Colaborador não está presente na ata: ataId=" + ataId + ", colaboradorId=" + colaboradorId,
 					ExceptionUtils.context("ataId", ataId, "colaboradorId", colaboradorId)
 			);
 		}
-
-		ataRepository.save(ata);
 	}
 
 	@Transactional(readOnly = true)
