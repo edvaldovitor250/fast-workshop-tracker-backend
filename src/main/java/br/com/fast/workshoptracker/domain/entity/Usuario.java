@@ -14,8 +14,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Entity;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -24,6 +31,10 @@ import java.util.Set;
 		uniqueConstraints = @UniqueConstraint(name = "uk_usuario_email", columnNames = "email"),
 		indexes = @Index(name = "idx_usuario_email", columnList = "email")
 )
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Usuario {
 
 	@Id
@@ -31,12 +42,15 @@ public class Usuario {
 	private Long id;
 
 	@Column(nullable = false, length = 120)
+	@NonNull
 	private String nome;
 
 	@Column(nullable = false, length = 180)
+	@NonNull
 	private String email;
 
 	@Column(name = "senha_hash", nullable = false, length = 255)
+	@NonNull
 	private String senhaHash;
 
 	@ElementCollection(fetch = FetchType.EAGER)
@@ -45,47 +59,9 @@ public class Usuario {
 	@Enumerated(EnumType.STRING)
 	private Set<UserRole> roles = new LinkedHashSet<>();
 
-	protected Usuario() {
+	@EqualsAndHashCode.Include
+	private Long idForEquality() {
+		return Objects.requireNonNull(id, "id must not be null for equality");
 	}
 
-	public Usuario(String nome, String email, String senhaHash, Set<UserRole> roles) {
-		this.nome = nome;
-		this.email = email;
-		this.senhaHash = senhaHash;
-		this.roles = roles == null ? new LinkedHashSet<>() : new LinkedHashSet<>(roles);
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public String getSenhaHash() {
-		return senhaHash;
-	}
-
-	public Set<UserRole> getRoles() {
-		return roles;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Usuario that = (Usuario) o;
-		return id != null && id.equals(that.id);
-	}
-
-	@Override
-	public int hashCode() {
-		return getClass().hashCode();
-	}
 }
-

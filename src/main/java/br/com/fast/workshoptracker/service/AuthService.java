@@ -11,6 +11,7 @@ import br.com.fast.workshoptracker.exception.UnauthorizedException;
 import br.com.fast.workshoptracker.exception.ConflictException;
 import br.com.fast.workshoptracker.mapper.UsuarioMapper;
 import br.com.fast.workshoptracker.repository.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
 	private final PasswordEncoder passwordEncoder;
@@ -33,20 +35,6 @@ public class AuthService {
 	private final UsuarioRepository usuarioRepository;
 	private final UsuarioMapper usuarioMapper;
 
-	public AuthService(
-			PasswordEncoder passwordEncoder,
-			JwtEncoder jwtEncoder,
-			JwtProperties jwtProperties,
-			UsuarioRepository usuarioRepository,
-			UsuarioMapper usuarioMapper
-	) {
-		this.passwordEncoder = passwordEncoder;
-		this.jwtEncoder = jwtEncoder;
-		this.jwtProperties = jwtProperties;
-		this.usuarioRepository = usuarioRepository;
-		this.usuarioMapper = usuarioMapper;
-	}
-
 	public UsuarioResponse register(AuthRegisterRequest request) {
 		String email = normalizeEmail(request.email());
 		if (usuarioRepository.existsByEmailIgnoreCase(email)) {
@@ -54,7 +42,8 @@ public class AuthService {
 		}
 
 		String senhaHash = passwordEncoder.encode(request.senha());
-		Usuario usuario = new Usuario(request.nome(), email, senhaHash, Set.of(UserRole.CREATOR, UserRole.READER));
+		Usuario usuario = new Usuario(request.nome(), email, senhaHash);
+		usuario.getRoles().addAll(Set.of(UserRole.CREATOR, UserRole.READER));
 		usuario = usuarioRepository.save(usuario);
 		return usuarioMapper.toResponse(usuario);
 	}

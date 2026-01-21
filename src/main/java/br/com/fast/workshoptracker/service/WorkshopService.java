@@ -5,19 +5,16 @@ import br.com.fast.workshoptracker.dto.request.WorkshopCreateRequest;
 import br.com.fast.workshoptracker.dto.response.WorkshopResponse;
 import br.com.fast.workshoptracker.mapper.WorkshopMapper;
 import br.com.fast.workshoptracker.repository.WorkshopRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class WorkshopService {
 
 	private final WorkshopRepository workshopRepository;
 	private final WorkshopMapper workshopMapper;
-
-	public WorkshopService(WorkshopRepository workshopRepository, WorkshopMapper workshopMapper) {
-		this.workshopRepository = workshopRepository;
-		this.workshopMapper = workshopMapper;
-	}
 
 	@Transactional
 	public WorkshopResponse create(WorkshopCreateRequest request) {

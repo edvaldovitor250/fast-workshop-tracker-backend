@@ -7,6 +7,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
+import java.util.Objects;
 
 @Entity
 @Table(
@@ -15,6 +24,10 @@ import jakarta.persistence.Table;
 				@Index(name = "idx_colaborador_nome", columnList = "nome")
 		}
 )
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Colaborador {
 
 	@Id
@@ -22,38 +35,13 @@ public class Colaborador {
 	private Long id;
 
 	@Column(nullable = false, length = 120)
+	@Setter
+	@NonNull
 	private String nome;
 
-	protected Colaborador() {
+	@EqualsAndHashCode.Include
+	private Long idForEquality() {
+		return Objects.requireNonNull(id, "id must not be null for equality");
 	}
 
-	public Colaborador(String nome) {
-		this.nome = nome;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Colaborador that = (Colaborador) o;
-		return id != null && id.equals(that.id);
-	}
-
-	@Override
-	public int hashCode() {
-		return getClass().hashCode();
-	}
 }
-

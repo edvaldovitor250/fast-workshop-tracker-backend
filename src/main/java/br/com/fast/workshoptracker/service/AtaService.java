@@ -16,6 +16,7 @@ import br.com.fast.workshoptracker.repository.AtaRepository;
 import br.com.fast.workshoptracker.repository.ColaboradorRepository;
 import br.com.fast.workshoptracker.repository.WorkshopRepository;
 import br.com.fast.workshoptracker.repository.projection.ColaboradorWorkshopRow;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,24 +30,13 @@ import java.util.Objects;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class AtaService {
 
 	private final AtaRepository ataRepository;
 	private final WorkshopRepository workshopRepository;
 	private final ColaboradorRepository colaboradorRepository;
 	private final AtaMapper ataMapper;
-
-	public AtaService(
-			AtaRepository ataRepository,
-			WorkshopRepository workshopRepository,
-			ColaboradorRepository colaboradorRepository,
-			AtaMapper ataMapper
-	) {
-		this.ataRepository = ataRepository;
-		this.workshopRepository = workshopRepository;
-		this.colaboradorRepository = colaboradorRepository;
-		this.ataMapper = ataMapper;
-	}
 
 	@Transactional
 	public AtaResponse create(AtaCreateRequest request) {

@@ -6,6 +6,7 @@ import br.com.fast.workshoptracker.service.WorkshopService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,13 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Workshops")
 @RestController
 @RequestMapping("/api/workshops")
+@RequiredArgsConstructor
 public class WorkshopController {
 
 	private final WorkshopService workshopService;
-
-	public WorkshopController(WorkshopService workshopService) {
-		this.workshopService = workshopService;
-	}
 
 	@Operation(summary = "Cadastrar workshop")
 	@PostMapping

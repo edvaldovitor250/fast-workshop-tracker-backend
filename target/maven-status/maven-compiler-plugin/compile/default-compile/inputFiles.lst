@@ -4,6 +4,7 @@ C:\Users\edval\Downloads\fast-workshop-tracker\src\main\java\br\com\fast\worksho
 C:\Users\edval\Downloads\fast-workshop-tracker\src\main\java\br\com\fast\workshoptracker\service\AuthService.java
 C:\Users\edval\Downloads\fast-workshop-tracker\src\main\java\br\com\fast\workshoptracker\service\ColaboradorService.java
 C:\Users\edval\Downloads\fast-workshop-tracker\src\main\java\br\com\fast\workshoptracker\controller\WorkshopController.java
+C:\Users\edval\Downloads\fast-workshop-tracker\src\main\java\br\com\fast\workshoptracker\domain\enum\UserRole.java
 C:\Users\edval\Downloads\fast-workshop-tracker\src\main\java\br\com\fast\workshoptracker\domain\entity\Ata.java
 C:\Users\edval\Downloads\fast-workshop-tracker\src\main\java\br\com\fast\workshoptracker\exception\UnauthorizedException.java
 C:\Users\edval\Downloads\fast-workshop-tracker\src\main\java\br\com\fast\workshoptracker\controller\AuthController.java
@@ -39,5 +40,4 @@ C:\Users\edval\Downloads\fast-workshop-tracker\src\main\java\br\com\fast\worksho
 C:\Users\edval\Downloads\fast-workshop-tracker\src\main\java\br\com\fast\workshoptracker\config\SecurityConfig.java
 C:\Users\edval\Downloads\fast-workshop-tracker\src\main\java\br\com\fast\workshoptracker\repository\ColaboradorRepository.java
 C:\Users\edval\Downloads\fast-workshop-tracker\src\main\java\br\com\fast\workshoptracker\config\JwtProperties.java
-C:\Users\edval\Downloads\fast-workshop-tracker\src\main\java\br\com\fast\workshoptracker\domain\entity\UserRole.java
 C:\Users\edval\Downloads\fast-workshop-tracker\src\main\java\br\com\fast\workshoptracker\mapper\UsuarioMapper.java

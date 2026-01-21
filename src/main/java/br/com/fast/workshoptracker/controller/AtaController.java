@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,13 +29,10 @@ import java.util.List;
 
 @Tag(name = "Atas")
 @RestController
+@RequiredArgsConstructor
 public class AtaController {
 
 	private final AtaService ataService;
-
-	public AtaController(AtaService ataService) {
-		this.ataService = ataService;
-	}
 
 	@Operation(summary = "Criar ata de presença")
 	@PostMapping("/api/atas")

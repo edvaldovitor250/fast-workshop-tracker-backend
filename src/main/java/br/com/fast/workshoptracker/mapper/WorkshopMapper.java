@@ -12,7 +12,9 @@ public class WorkshopMapper {
 		if (request == null) {
 			return null;
 		}
-		return new Workshop(request.nome(), request.dataRealizacao(), request.descricao());
+		Workshop workshop = new Workshop(request.nome(), request.dataRealizacao());
+		workshop.setDescricao(request.descricao());
+		return workshop;
 	}
 
 	public WorkshopResponse toResponse(Workshop entity) {

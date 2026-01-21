@@ -67,7 +67,7 @@ class AtaServiceTest {
 
 	@Test
 	void create_quandoAtaJaExisteParaWorkshop_deveRetornar409() {
-		Workshop workshop = new Workshop("WS", LocalDate.of(2026, 1, 20), null);
+		Workshop workshop = new Workshop("WS", LocalDate.of(2026, 1, 20));
 		setId(workshop, 1L);
 
 		when(workshopRepository.findById(1L)).thenReturn(Optional.of(workshop));
@@ -80,7 +80,7 @@ class AtaServiceTest {
 
 	@Test
 	void addColaborador_quandoJaPresente_deveRetornar409() {
-		Workshop workshop = new Workshop("WS", LocalDate.of(2026, 1, 20), null);
+		Workshop workshop = new Workshop("WS", LocalDate.of(2026, 1, 20));
 		setId(workshop, 1L);
 
 		Colaborador colaborador = new Colaborador("Ana");

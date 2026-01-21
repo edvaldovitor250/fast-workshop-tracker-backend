@@ -2,18 +2,15 @@ package br.com.fast.workshoptracker.mapper;
 
 import br.com.fast.workshoptracker.domain.entity.Ata;
 import br.com.fast.workshoptracker.dto.response.AtaResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class AtaMapper {
 
 	private final WorkshopMapper workshopMapper;
 	private final ColaboradorMapper colaboradorMapper;
-
-	public AtaMapper(WorkshopMapper workshopMapper, ColaboradorMapper colaboradorMapper) {
-		this.workshopMapper = workshopMapper;
-		this.colaboradorMapper = colaboradorMapper;
-	}
 
 	public AtaResponse toResponse(Ata entity) {
 		if (entity == null) {

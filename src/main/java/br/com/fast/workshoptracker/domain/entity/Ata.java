@@ -11,8 +11,15 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -22,6 +29,10 @@ import java.util.Set;
 				@UniqueConstraint(name = "uk_ata_workshop", columnNames = "workshop_id")
 		}
 )
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Ata {
 
 	@Id
@@ -30,6 +41,7 @@ public class Ata {
 
 	@OneToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "workshop_id", nullable = false, unique = true)
+	@NonNull
 	private Workshop workshop;
 
 	@ManyToMany
@@ -41,36 +53,9 @@ public class Ata {
 	)
 	private Set<Colaborador> colaboradores = new LinkedHashSet<>();
 
-	protected Ata() {
+	@EqualsAndHashCode.Include
+	private Long idForEquality() {
+		return Objects.requireNonNull(id, "id must not be null for equality");
 	}
 
-	public Ata(Workshop workshop) {
-		this.workshop = workshop;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public Workshop getWorkshop() {
-		return workshop;
-	}
-
-	public Set<Colaborador> getColaboradores() {
-		return colaboradores;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Ata that = (Ata) o;
-		return id != null && id.equals(that.id);
-	}
-
-	@Override
-	public int hashCode() {
-		return getClass().hashCode();
-	}
 }
-
