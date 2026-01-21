@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: br.com.fast.workshoptracker.WorkshopTrackerIntegrationTest
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.987 s -- in br.com.fast.workshoptracker.WorkshopTrackerIntegrationTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.620 s -- in br.com.fast.workshoptracker.WorkshopTrackerIntegrationTest

@@ -1,11 +1,11 @@
 package br.com.fast.workshoptracker;
 
-import br.com.fast.workshoptracker.dto.request.AtaAddColaboradorRequest;
-import br.com.fast.workshoptracker.dto.request.AtaCreateRequest;
-import br.com.fast.workshoptracker.dto.request.AuthLoginRequest;
-import br.com.fast.workshoptracker.dto.request.AuthRegisterRequest;
-import br.com.fast.workshoptracker.dto.request.ColaboradorCreateRequest;
-import br.com.fast.workshoptracker.dto.request.WorkshopCreateRequest;
+import br.com.fast.workshoptracker.api.dto.request.AtaAddColaboradorRequest;
+import br.com.fast.workshoptracker.api.dto.request.AtaCreateRequest;
+import br.com.fast.workshoptracker.api.dto.request.AuthLoginRequest;
+import br.com.fast.workshoptracker.api.dto.request.AuthRegisterRequest;
+import br.com.fast.workshoptracker.api.dto.request.ColaboradorCreateRequest;
+import br.com.fast.workshoptracker.api.dto.request.WorkshopCreateRequest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
