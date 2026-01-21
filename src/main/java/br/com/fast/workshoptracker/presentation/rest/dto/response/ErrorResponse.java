@@ -1,5 +1,6 @@
 package br.com.fast.workshoptracker.presentation.rest.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.OffsetDateTime;
@@ -9,7 +10,8 @@ public record ErrorResponse(
 		@Schema(example = "9d6e08ae-9d72-4e59-8f0a-0c49f3d5b5f2")
 		String exceptionId,
 
-		@Schema(example = "2026-01-20T21:55:35.099-03:00")
+		@JsonFormat(pattern = "dd/MM/yyyy HH:mm:ssXXX")
+		@Schema(example = "20/01/2026 21:55:35-03:00")
 		OffsetDateTime timestamp,
 
 		@Schema(example = "400")

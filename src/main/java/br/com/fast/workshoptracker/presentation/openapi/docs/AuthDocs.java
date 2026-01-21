@@ -108,7 +108,7 @@ public final class AuthDocs {
 			{
 			  "tokenType": "Bearer",
 			  "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3b3Jrc2hvcC10cmFja2VyIiwic3ViIjoiYW5hQGZhc3QuY29tIiwiZXhwIjoxNzM3NDAwMDAwfQ.XXXX",
-			  "expiresAt": "2026-01-20T21:30:00Z",
+			  "expiresAt": "20/01/2026 18:30:00-03:00",
 			  "roles": ["CREATOR", "READER"]
 			}
 			""";

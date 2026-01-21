@@ -195,7 +195,7 @@ public interface AtaApi {
 			@Parameter(description = "Filtro por nome do workshop (contem, case-insensitive)", example = "spring")
 			@RequestParam(required = false) String workshopNome,
 
-			@Parameter(description = "Formato yyyy-MM-dd", example = "2026-01-20")
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data
+			@Parameter(description = "Formato dd/MM/yyyy", example = "20/01/2026")
+			@RequestParam(required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate data
 	);
 }

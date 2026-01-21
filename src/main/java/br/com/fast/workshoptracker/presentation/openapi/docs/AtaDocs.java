@@ -54,7 +54,7 @@ public final class AtaDocs {
 			  "workshop": {
 			    "id": 1,
 			    "nome": "Workshop Spring",
-			    "dataRealizacao": "2026-01-20",
+			    "dataRealizacao": "20/01/2026",
 			    "descricao": "Conteudo do workshop..."
 			  },
 			  "colaboradores": [
@@ -105,7 +105,7 @@ public final class AtaDocs {
 			  "workshop": {
 			    "id": 1,
 			    "nome": "Workshop Spring",
-			    "dataRealizacao": "2026-01-20",
+			    "dataRealizacao": "20/01/2026",
 			    "descricao": "Conteudo do workshop..."
 			  },
 			  "colaboradores": [
@@ -151,9 +151,9 @@ public final class AtaDocs {
 			        </tr>
 			        <tr>
 			          <td><strong>data</strong></td>
-			          <td>`@DateTimeFormat(ISO.DATE)`</td>
-			          <td>Filtra por data (yyyy-MM-dd).</td>
-			          <td>2026-01-20</td>
+			          <td>`@DateTimeFormat(pattern = "dd/MM/yyyy")`</td>
+			          <td>Filtra por data (dd/MM/yyyy).</td>
+			          <td>20/01/2026</td>
 			        </tr>
 			      </tbody>
 			    </table>
@@ -170,7 +170,7 @@ public final class AtaDocs {
 			      {
 			        "id": 1,
 			        "nome": "Workshop Spring",
-			        "dataRealizacao": "2026-01-20",
+			        "dataRealizacao": "20/01/2026",
 			        "descricao": "Conteudo do workshop..."
 			      }
 			    ]

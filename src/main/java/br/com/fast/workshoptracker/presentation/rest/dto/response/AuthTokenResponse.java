@@ -1,5 +1,6 @@
 package br.com.fast.workshoptracker.presentation.rest.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import br.com.fast.workshoptracker.presentation.rest.validation.auth.jwt.JwtAccessToken;
 import br.com.fast.workshoptracker.presentation.rest.validation.auth.jwt.JwtExpiresAt;
 import br.com.fast.workshoptracker.presentation.rest.validation.auth.jwt.JwtRoles;
@@ -20,7 +21,8 @@ public record AuthTokenResponse(
 		String accessToken,
 
 		@JwtExpiresAt
-		@Schema(example = "2026-01-20T21:30:00Z")
+		@JsonFormat(pattern = "dd/MM/yyyy HH:mm:ssXXX", timezone = "America/Sao_Paulo")
+		@Schema(example = "20/01/2026 18:30:00-03:00")
 		Instant expiresAt,
 
 		@JwtRoles

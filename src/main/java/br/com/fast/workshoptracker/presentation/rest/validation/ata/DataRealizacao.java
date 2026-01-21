@@ -15,8 +15,9 @@ import java.lang.annotation.Target;
 @NotNull(message = "dataRealizacao é obrigatória")
 @Schema(
 		description = "Data de realização do workshop",
-		example = "2026-01-20",
-		format = "date",
+		example = "20/01/2026",
+		pattern = "dd/MM/yyyy",
+		format = "string",
 		requiredMode = Schema.RequiredMode.REQUIRED
 )
 public @interface DataRealizacao {

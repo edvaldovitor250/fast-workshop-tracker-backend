@@ -1,5 +1,6 @@
 package br.com.fast.workshoptracker.presentation.rest.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import br.com.fast.workshoptracker.presentation.rest.validation.ata.DataRealizacao;
 import br.com.fast.workshoptracker.presentation.rest.validation.workshop.WorkshopDescricao;
 import br.com.fast.workshoptracker.presentation.rest.validation.workshop.WorkshopNome;
@@ -13,7 +14,8 @@ public record WorkshopCreateRequest(
 		String nome,
 
 		@DataRealizacao
-		@Schema(example = "2026-01-20")
+		@JsonFormat(pattern = "dd/MM/yyyy")
+		@Schema(example = "20/01/2026")
 		LocalDate dataRealizacao,
 
 		@WorkshopDescricao

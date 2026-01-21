@@ -67,7 +67,7 @@ class WorkshopTrackerIntegrationTest {
 
 		mockMvc.perform(get("/api/atas")
 						.queryParam("workshopNome", "spring")
-						.queryParam("data", "2026-01-20")
+						.queryParam("data", "20/01/2026")
 						.header("Authorization", "Bearer " + token))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$[0].nome").value("Bruno Souza"))

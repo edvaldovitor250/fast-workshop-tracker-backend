@@ -68,7 +68,7 @@ public class AtaController implements AtaApi {
 	@PreAuthorize("hasAnyRole('READER','CREATOR','ADMIN')")
 	public ResponseEntity<List<ColaboradorParticipacoesResponse>> listarParticipacoes(
 			@RequestParam(required = false) String workshopNome,
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data
+			@RequestParam(required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate data
 	) {
 		var dtos = listarParticipacoesUseCase.execute(new ListarParticipacoesQuery(workshopNome, data));
 		var response = dtos.stream().map(ataRestMapper::toResponse).toList();

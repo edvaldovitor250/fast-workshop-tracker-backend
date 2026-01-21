@@ -31,8 +31,8 @@ public final class WorkshopDocs {
 			        <tr>
 			          <td><strong>dataRealizacao</strong></td>
 			          <td>`@DataRealizacao`</td>
-			          <td>Data de realizacao (yyyy-MM-dd).</td>
-			          <td>2026-01-20</td>
+			          <td>Data de realizacao (dd/MM/yyyy).</td>
+			          <td>20/01/2026</td>
 			        </tr>
 			        <tr>
 			          <td><strong>descricao</strong></td>
@@ -49,7 +49,7 @@ public final class WorkshopDocs {
 	public static final String CREATE_REQUEST_EXAMPLE = """
 			{
 			  "nome": "Workshop Spring",
-			  "dataRealizacao": "2026-01-20",
+			  "dataRealizacao": "20/01/2026",
 			  "descricao": "Conteudo do workshop..."
 			}
 			""";
@@ -58,7 +58,7 @@ public final class WorkshopDocs {
 			{
 			  "id": 1,
 			  "nome": "Workshop Spring",
-			  "dataRealizacao": "2026-01-20",
+			  "dataRealizacao": "20/01/2026",
 			  "descricao": "Conteudo do workshop..."
 			}
 			""";

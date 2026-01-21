@@ -15,7 +15,9 @@ import java.lang.annotation.Target;
 @NotNull(message = "expiresAt é obrigatório")
 @Schema(
 		description = "Data/hora de expiração do token",
-		format = "date-time",
+		example = "20/01/2026 18:30:00-03:00",
+		pattern = "dd/MM/yyyy HH:mm:ssXXX",
+		format = "string",
 		requiredMode = Schema.RequiredMode.REQUIRED
 )
 public @interface JwtExpiresAt {
