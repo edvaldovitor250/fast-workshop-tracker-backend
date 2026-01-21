@@ -1,5 +1,7 @@
 package br.com.fast.workshoptracker.domain.entity;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,9 +17,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-import java.util.Objects;
-
 @Entity
 @Table(
 		name = "workshop",
@@ -29,7 +28,7 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @RequiredArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(of = "id")
 public class Workshop {
 
 	@Id
@@ -49,10 +48,5 @@ public class Workshop {
 	@Column(length = 500)
 	@Setter
 	private String descricao;
-
-	@EqualsAndHashCode.Include
-	private Long idForEquality() {
-		return Objects.requireNonNull(id, "id must not be null for equality");
-	}
 
 }

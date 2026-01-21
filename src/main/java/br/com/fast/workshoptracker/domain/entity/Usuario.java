@@ -1,8 +1,13 @@
 package br.com.fast.workshoptracker.domain.entity;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import br.com.fast.workshoptracker.domain.enums.UserRole;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -13,18 +18,12 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import jakarta.persistence.Entity;
-import br.com.fast.workshoptracker.domain.enums.UserRole;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(
@@ -35,7 +34,7 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @RequiredArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(of = "id")
 public class Usuario {
 
 	@Id
@@ -59,10 +58,5 @@ public class Usuario {
 	@Column(name = "role", nullable = false, length = 30)
 	@Enumerated(EnumType.STRING)
 	private Set<UserRole> roles = new LinkedHashSet<>();
-
-	@EqualsAndHashCode.Include
-	private Long idForEquality() {
-		return Objects.requireNonNull(id, "id must not be null for equality");
-	}
 
 }

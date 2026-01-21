@@ -15,8 +15,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.util.Objects;
-
 @Entity
 @Table(
 		name = "colaborador",
@@ -27,7 +25,7 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @RequiredArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(of = "id")
 public class Colaborador {
 
 	@Id
@@ -38,10 +36,5 @@ public class Colaborador {
 	@Setter
 	@NonNull
 	private String nome;
-
-	@EqualsAndHashCode.Include
-	private Long idForEquality() {
-		return Objects.requireNonNull(id, "id must not be null for equality");
-	}
 
 }

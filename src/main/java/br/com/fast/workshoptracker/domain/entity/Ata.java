@@ -1,5 +1,8 @@
 package br.com.fast.workshoptracker.domain.entity;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -20,10 +23,6 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
-
 @Entity
 @Table(
 		name = "ata",
@@ -41,7 +40,7 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @RequiredArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(of = "id")
 public class Ata {
 
 	@Id
@@ -61,10 +60,5 @@ public class Ata {
 			uniqueConstraints = @UniqueConstraint(name = "uk_ata_colaborador", columnNames = {"ata_id", "colaborador_id"})
 	)
 	private Set<Colaborador> colaboradores = new LinkedHashSet<>();
-
-	@EqualsAndHashCode.Include
-	private Long idForEquality() {
-		return Objects.requireNonNull(id, "id must not be null for equality");
-	}
 
 }
