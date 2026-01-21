@@ -1,22 +1,22 @@
 package br.com.fast.workshoptracker.application.service;
 
-import br.com.fast.workshoptracker.domain.entity.Ata;
-import br.com.fast.workshoptracker.domain.entity.Colaborador;
-import br.com.fast.workshoptracker.domain.entity.Workshop;
 import br.com.fast.workshoptracker.api.dto.request.AtaAddColaboradorRequest;
 import br.com.fast.workshoptracker.api.dto.request.AtaCreateRequest;
 import br.com.fast.workshoptracker.api.dto.response.AtaResponse;
 import br.com.fast.workshoptracker.api.dto.response.ColaboradorParticipacoesResponse;
 import br.com.fast.workshoptracker.api.dto.response.WorkshopResponse;
 import br.com.fast.workshoptracker.api.mapper.AtaMapper;
-import br.com.fast.workshoptracker.domain.exception.BadRequestException;
-import br.com.fast.workshoptracker.domain.exception.ConflictException;
-import br.com.fast.workshoptracker.domain.exception.NotFoundException;
+import br.com.fast.workshoptracker.domain.entity.Ata;
+import br.com.fast.workshoptracker.domain.entity.Colaborador;
+import br.com.fast.workshoptracker.domain.entity.Workshop;
+import br.com.fast.workshoptracker.domain.exception.Exceptions;
+import br.com.fast.workshoptracker.domain.exception.util.ExceptionUtils;
 import br.com.fast.workshoptracker.infrastructure.persistence.projection.ColaboradorWorkshopRow;
 import br.com.fast.workshoptracker.infrastructure.persistence.repository.AtaRepository;
 import br.com.fast.workshoptracker.infrastructure.persistence.repository.ColaboradorRepository;
 import br.com.fast.workshoptracker.infrastructure.persistence.repository.WorkshopRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,10 +43,16 @@ public class AtaService {
 		validateUniqueIds(request.colaboradoresIds());
 
 		Workshop workshop = workshopRepository.findById(request.workshopId())
-				.orElseThrow(() -> new NotFoundException("Workshop não encontrado: id=" + request.workshopId()));
+				.orElseThrow(() -> Exceptions.notFound(
+						"Workshop não encontrado: id=" + request.workshopId(),
+						ExceptionUtils.context("workshopId", request.workshopId())
+				));
 
-		if (ataRepository.existsByWorkshop_Id(workshop.getId())) {
-			throw new ConflictException("Já existe ata para o workshop: id=" + workshop.getId());
+		if (ataRepository.existsByWorkshopId(workshop.getId())) {
+			throw Exceptions.conflict(
+					"Já existe ata para o workshop: id=" + workshop.getId(),
+					ExceptionUtils.context("workshopId", workshop.getId())
+			);
 		}
 
 		Ata ata = new Ata(workshop);
@@ -60,7 +66,10 @@ public class AtaService {
 					found.add(c.getId());
 				}
 				List<Long> missing = colaboradoresIds.stream().distinct().filter(id -> !found.contains(id)).toList();
-				throw new NotFoundException("Colaboradores não encontrados: ids=" + missing);
+				throw Exceptions.notFound(
+						"Colaboradores não encontrados: ids=" + missing,
+						ExceptionUtils.context("colaboradoresIds", missing)
+				);
 			}
 			ata.getColaboradores().addAll(colaboradores);
 		}
@@ -72,18 +81,30 @@ public class AtaService {
 	@Transactional
 	public AtaResponse addColaborador(Long workshopId, Long ataId, AtaAddColaboradorRequest request) {
 		if (!workshopRepository.existsById(workshopId)) {
-			throw new NotFoundException("Workshop não encontrado: id=" + workshopId);
+			throw Exceptions.notFound(
+					"Workshop não encontrado: id=" + workshopId,
+					ExceptionUtils.context("workshopId", workshopId)
+			);
 		}
 
-		Ata ata = ataRepository.findWithWorkshopAndColaboradoresByIdAndWorkshop_Id(ataId, workshopId)
-				.orElseThrow(() -> new NotFoundException("Ata não encontrada para o workshop: ataId=" + ataId + ", workshopId=" + workshopId));
+		Ata ata = ataRepository.findByIdAndWorkshopId(ataId, workshopId)
+				.orElseThrow(() -> Exceptions.notFound(
+						"Ata não encontrada para o workshop: ataId=" + ataId + ", workshopId=" + workshopId,
+						ExceptionUtils.context("ataId", ataId, "workshopId", workshopId)
+				));
 
 		Colaborador colaborador = colaboradorRepository.findById(request.colaboradorId())
-				.orElseThrow(() -> new NotFoundException("Colaborador não encontrado: id=" + request.colaboradorId()));
+				.orElseThrow(() -> Exceptions.notFound(
+						"Colaborador não encontrado: id=" + request.colaboradorId(),
+						ExceptionUtils.context("colaboradorId", request.colaboradorId())
+				));
 
 		boolean added = ata.getColaboradores().add(colaborador);
 		if (!added) {
-			throw new ConflictException("Colaborador já está presente na ata: ataId=" + ataId + ", colaboradorId=" + colaborador.getId());
+			throw Exceptions.conflict(
+					"Colaborador já está presente na ata: ataId=" + ataId + ", colaboradorId=" + colaborador.getId(),
+					ExceptionUtils.context("ataId", ataId, "colaboradorId", colaborador.getId())
+			);
 		}
 
 		ata = ataRepository.save(ata);
@@ -92,15 +113,24 @@ public class AtaService {
 
 	@Transactional
 	public void removeColaborador(Long ataId, Long colaboradorId) {
-		Ata ata = ataRepository.findWithWorkshopAndColaboradoresById(ataId)
-				.orElseThrow(() -> new NotFoundException("Ata não encontrada: id=" + ataId));
+		Ata ata = ataRepository.findById(ataId)
+				.orElseThrow(() -> Exceptions.notFound(
+						"Ata não encontrada: id=" + ataId,
+						ExceptionUtils.context("ataId", ataId)
+				));
 
 		Colaborador colaborador = colaboradorRepository.findById(colaboradorId)
-				.orElseThrow(() -> new NotFoundException("Colaborador não encontrado: id=" + colaboradorId));
+				.orElseThrow(() -> Exceptions.notFound(
+						"Colaborador não encontrado: id=" + colaboradorId,
+						ExceptionUtils.context("colaboradorId", colaboradorId)
+				));
 
 		boolean removed = ata.getColaboradores().removeIf(c -> Objects.equals(c.getId(), colaborador.getId()));
 		if (!removed) {
-			throw new NotFoundException("Colaborador não está presente na ata: ataId=" + ataId + ", colaboradorId=" + colaboradorId);
+			throw Exceptions.notFound(
+					"Colaborador não está presente na ata: ataId=" + ataId + ", colaboradorId=" + colaboradorId,
+					ExceptionUtils.context("ataId", ataId, "colaboradorId", colaboradorId)
+			);
 		}
 
 		ataRepository.save(ata);
@@ -110,7 +140,7 @@ public class AtaService {
 	public List<ColaboradorParticipacoesResponse> listarParticipacoes(String workshopNome, LocalDate dataRealizacao) {
 		String nome = normalizeBlankToNull(workshopNome);
 
-		List<ColaboradorWorkshopRow> rows = ataRepository.findParticipacoes(nome, dataRealizacao);
+		List<ColaboradorWorkshopRow> rows = ataRepository.findParticipacoes(nome, dataRealizacao, Pageable.unpaged()).getContent();
 
 		Map<Long, ColaboradorParticipacoesResponseAccumulator> map = new LinkedHashMap<>();
 		for (ColaboradorWorkshopRow row : rows) {
@@ -136,10 +166,16 @@ public class AtaService {
 		Set<Long> seen = new HashSet<>(ids.size());
 		for (Long id : ids) {
 			if (id == null) {
-				throw new BadRequestException("colaboradoresIds não pode conter null");
+				throw Exceptions.badRequest(
+						"colaboradoresIds não pode conter null",
+						ExceptionUtils.context("colaboradoresIds", ids)
+				);
 			}
 			if (!seen.add(id)) {
-				throw new BadRequestException("colaboradoresIds contém ids duplicados");
+				throw Exceptions.badRequest(
+						"colaboradoresIds contém ids duplicados",
+						ExceptionUtils.context("colaboradoresIds", ids)
+				);
 			}
 		}
 	}

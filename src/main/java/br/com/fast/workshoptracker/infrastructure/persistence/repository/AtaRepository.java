@@ -2,24 +2,25 @@ package br.com.fast.workshoptracker.infrastructure.persistence.repository;
 
 import br.com.fast.workshoptracker.domain.entity.Ata;
 import br.com.fast.workshoptracker.infrastructure.persistence.projection.ColaboradorWorkshopRow;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 public interface AtaRepository extends JpaRepository<Ata, Long> {
 
-	boolean existsByWorkshop_Id(Long workshopId);
+	boolean existsByWorkshopId(Long workshopId);
 
-	@EntityGraph(attributePaths = {"workshop", "colaboradores"})
-	Optional<Ata> findWithWorkshopAndColaboradoresById(Long id);
+	@EntityGraph("Ata.withWorkshopAndColaboradores")
+	Optional<Ata> findById(Long id);
 
-	@EntityGraph(attributePaths = {"workshop", "colaboradores"})
-	Optional<Ata> findWithWorkshopAndColaboradoresByIdAndWorkshop_Id(Long id, Long workshopId);
+	@EntityGraph("Ata.withWorkshopAndColaboradores")
+	Optional<Ata> findByIdAndWorkshopId(Long id, Long workshopId);
 
 	@Query("""
 			select
@@ -36,9 +37,10 @@ public interface AtaRepository extends JpaRepository<Ata, Long> {
 			  and (:dataRealizacao is null or w.dataRealizacao = :dataRealizacao)
 			order by c.nome asc, w.dataRealizacao asc, w.nome asc
 			""")
-	List<ColaboradorWorkshopRow> findParticipacoes(
+	Page<ColaboradorWorkshopRow> findParticipacoes(
 			@Param("workshopNome") String workshopNome,
-			@Param("dataRealizacao") LocalDate dataRealizacao
+			@Param("dataRealizacao") LocalDate dataRealizacao,
+			Pageable pageable
 	);
 }
 

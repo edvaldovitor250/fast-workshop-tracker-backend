@@ -1,7 +1,0 @@
-package br.com.fast.workshoptracker.domain.exception;
-
-import lombok.experimental.StandardException;
-
-@StandardException
-public class UnauthorizedException extends RuntimeException {
-}

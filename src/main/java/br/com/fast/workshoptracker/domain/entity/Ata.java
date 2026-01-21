@@ -8,6 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -27,6 +29,13 @@ import java.util.Set;
 		name = "ata",
 		uniqueConstraints = {
 				@UniqueConstraint(name = "uk_ata_workshop", columnNames = "workshop_id")
+		}
+)
+@NamedEntityGraph(
+		name = "Ata.withWorkshopAndColaboradores",
+		attributeNodes = {
+				@NamedAttributeNode("workshop"),
+				@NamedAttributeNode("colaboradores")
 		}
 )
 @Getter

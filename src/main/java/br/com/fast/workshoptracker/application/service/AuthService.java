@@ -1,18 +1,17 @@
 package br.com.fast.workshoptracker.application.service;
 
-import br.com.fast.workshoptracker.domain.entity.Usuario;
-import br.com.fast.workshoptracker.domain.enums.UserRole;
 import br.com.fast.workshoptracker.api.dto.request.AuthLoginRequest;
 import br.com.fast.workshoptracker.api.dto.request.AuthRegisterRequest;
 import br.com.fast.workshoptracker.api.dto.response.AuthTokenResponse;
 import br.com.fast.workshoptracker.api.dto.response.UsuarioResponse;
 import br.com.fast.workshoptracker.api.mapper.UsuarioMapper;
-import br.com.fast.workshoptracker.domain.exception.ConflictException;
-import br.com.fast.workshoptracker.domain.exception.UnauthorizedException;
+import br.com.fast.workshoptracker.domain.entity.Usuario;
+import br.com.fast.workshoptracker.domain.enums.UserRole;
+import br.com.fast.workshoptracker.domain.exception.Exceptions;
+import br.com.fast.workshoptracker.domain.exception.util.ExceptionUtils;
 import br.com.fast.workshoptracker.infrastructure.config.JwtProperties;
 import br.com.fast.workshoptracker.infrastructure.persistence.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
@@ -38,7 +37,10 @@ public class AuthService {
 	public UsuarioResponse register(AuthRegisterRequest request) {
 		String email = normalizeEmail(request.email());
 		if (usuarioRepository.existsByEmailIgnoreCase(email)) {
-			throw new ConflictException("E-mail já cadastrado");
+			throw Exceptions.conflict(
+					"E-mail já cadastrado",
+					ExceptionUtils.context("email", email)
+			);
 		}
 
 		String senhaHash = passwordEncoder.encode(request.senha());
@@ -51,10 +53,10 @@ public class AuthService {
 	public AuthTokenResponse login(AuthLoginRequest request) {
 		String email = normalizeEmail(request.email());
 		Usuario usuario = usuarioRepository.findByEmailIgnoreCase(email)
-				.orElseThrow(() -> new UnauthorizedException("Credenciais inválidas"));
+				.orElseThrow(() -> Exceptions.invalidCredentials(email));
 
 		if (!passwordEncoder.matches(request.senha(), usuario.getSenhaHash())) {
-			throw new UnauthorizedException("Credenciais inválidas");
+			throw Exceptions.invalidCredentials(email);
 		}
 
 		List<String> roles = usuario.getRoles().stream().map(Enum::name).sorted().toList();

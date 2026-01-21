@@ -3,12 +3,13 @@ package br.com.fast.workshoptracker.application.service;
 import br.com.fast.workshoptracker.domain.entity.Ata;
 import br.com.fast.workshoptracker.domain.entity.Colaborador;
 import br.com.fast.workshoptracker.domain.entity.Workshop;
+import br.com.fast.workshoptracker.domain.exception.codes.BusinessErrorCode;
+import br.com.fast.workshoptracker.domain.exception.codes.ValidationErrorCode;
+import br.com.fast.workshoptracker.domain.exception.domain.BusinessException;
+import br.com.fast.workshoptracker.domain.exception.validation.ValidationException;
 import br.com.fast.workshoptracker.api.dto.request.AtaAddColaboradorRequest;
 import br.com.fast.workshoptracker.api.dto.request.AtaCreateRequest;
 import br.com.fast.workshoptracker.api.mapper.AtaMapper;
-import br.com.fast.workshoptracker.domain.exception.BadRequestException;
-import br.com.fast.workshoptracker.domain.exception.ConflictException;
-import br.com.fast.workshoptracker.domain.exception.NotFoundException;
 import br.com.fast.workshoptracker.infrastructure.persistence.repository.AtaRepository;
 import br.com.fast.workshoptracker.infrastructure.persistence.repository.ColaboradorRepository;
 import br.com.fast.workshoptracker.infrastructure.persistence.repository.WorkshopRepository;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -50,7 +52,8 @@ class AtaServiceTest {
 	void create_quandoColaboradoresIdsDuplicados_deveRetornar400() {
 		AtaCreateRequest req = new AtaCreateRequest(1L, List.of(1L, 1L));
 
-		assertThrows(BadRequestException.class, () -> ataService.create(req));
+		ValidationException ex = assertThrows(ValidationException.class, () -> ataService.create(req));
+		assertEquals(ValidationErrorCode.VAL_002_BAD_REQUEST, ex.getErrorCode());
 
 		verify(workshopRepository, never()).findById(anyLong());
 		verify(ataRepository, never()).save(any(Ata.class));
@@ -62,7 +65,8 @@ class AtaServiceTest {
 
 		AtaCreateRequest req = new AtaCreateRequest(1L, List.of());
 
-		assertThrows(NotFoundException.class, () -> ataService.create(req));
+		BusinessException ex = assertThrows(BusinessException.class, () -> ataService.create(req));
+		assertEquals(BusinessErrorCode.BUS_001_NOT_FOUND, ex.getErrorCode());
 	}
 
 	@Test
@@ -71,11 +75,12 @@ class AtaServiceTest {
 		setId(workshop, 1L);
 
 		when(workshopRepository.findById(1L)).thenReturn(Optional.of(workshop));
-		when(ataRepository.existsByWorkshop_Id(1L)).thenReturn(true);
+		when(ataRepository.existsByWorkshopId(1L)).thenReturn(true);
 
 		AtaCreateRequest req = new AtaCreateRequest(1L, List.of());
 
-		assertThrows(ConflictException.class, () -> ataService.create(req));
+		BusinessException ex = assertThrows(BusinessException.class, () -> ataService.create(req));
+		assertEquals(BusinessErrorCode.BUS_002_CONFLICT, ex.getErrorCode());
 	}
 
 	@Test
@@ -91,10 +96,11 @@ class AtaServiceTest {
 		ata.getColaboradores().add(colaborador);
 
 		when(workshopRepository.existsById(1L)).thenReturn(true);
-		when(ataRepository.findWithWorkshopAndColaboradoresByIdAndWorkshop_Id(2L, 1L)).thenReturn(Optional.of(ata));
+		when(ataRepository.findByIdAndWorkshopId(2L, 1L)).thenReturn(Optional.of(ata));
 		when(colaboradorRepository.findById(10L)).thenReturn(Optional.of(colaborador));
 
-		assertThrows(ConflictException.class, () -> ataService.addColaborador(1L, 2L, new AtaAddColaboradorRequest(10L)));
+		BusinessException ex = assertThrows(BusinessException.class, () -> ataService.addColaborador(1L, 2L, new AtaAddColaboradorRequest(10L)));
+		assertEquals(BusinessErrorCode.BUS_002_CONFLICT, ex.getErrorCode());
 	}
 
 	private static void setId(Object entity, Long id) {
