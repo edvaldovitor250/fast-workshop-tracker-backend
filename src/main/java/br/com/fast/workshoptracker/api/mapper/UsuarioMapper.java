@@ -1,20 +1,29 @@
 package br.com.fast.workshoptracker.api.mapper;
 
-import br.com.fast.workshoptracker.domain.entity.Usuario;
 import br.com.fast.workshoptracker.api.dto.response.UsuarioResponse;
-import org.springframework.stereotype.Component;
+import br.com.fast.workshoptracker.domain.entity.Usuario;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.List;
+import java.util.Set;
 
-@Component
-public class UsuarioMapper {
+@Mapper(componentModel = "spring")
+public interface UsuarioMapper {
 
-	public UsuarioResponse toResponse(Usuario entity) {
-		if (entity == null) {
-			return null;
+	@Mapping(target = "roles", source = "roles", qualifiedByName = "rolesToStrings")
+	UsuarioResponse toResponse(Usuario entity);
+
+	@Named("rolesToStrings")
+	default List<String> rolesToStrings(Set<? extends Enum<?>> roles) {
+		if (roles == null || roles.isEmpty()) {
+			return List.of();
 		}
-		List<String> roles = entity.getRoles().stream().map(Enum::name).sorted().toList();
-		return new UsuarioResponse(entity.getId(), entity.getNome(), entity.getEmail(), roles);
+		return roles.stream()
+				.map(Enum::name)
+				.sorted()
+				.toList();
 	}
 }
 
