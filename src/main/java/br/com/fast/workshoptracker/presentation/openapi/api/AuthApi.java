@@ -1,23 +1,24 @@
 package br.com.fast.workshoptracker.presentation.openapi.api;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import br.com.fast.workshoptracker.presentation.openapi.docs.AuthDocs;
+import br.com.fast.workshoptracker.presentation.openapi.docs.CommonErrorDocs;
 import br.com.fast.workshoptracker.presentation.rest.dto.request.AuthLoginRequest;
 import br.com.fast.workshoptracker.presentation.rest.dto.request.AuthRegisterRequest;
 import br.com.fast.workshoptracker.presentation.rest.dto.response.AuthTokenResponse;
 import br.com.fast.workshoptracker.presentation.rest.dto.response.ErrorResponse;
 import br.com.fast.workshoptracker.presentation.rest.dto.response.UsuarioResponse;
-import br.com.fast.workshoptracker.presentation.openapi.docs.AuthDocs;
-import br.com.fast.workshoptracker.presentation.openapi.docs.CommonErrorDocs;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Tag(name = AuthDocs.TAG)
 @RequestMapping("/api/auth")

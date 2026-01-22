@@ -4,7 +4,7 @@ import br.com.fast.workshoptracker.presentation.rest.dto.request.ColaboradorCrea
 import br.com.fast.workshoptracker.presentation.rest.dto.response.ColaboradorResponse;
 import br.com.fast.workshoptracker.presentation.openapi.api.ColaboradorApi;
 import br.com.fast.workshoptracker.application.port.input.CriarColaboradorUseCase;
-import br.com.fast.workshoptracker.presentation.rest.mapper.ColaboradorRestMapper;
+import br.com.fast.workshoptracker.presentation.rest.mapper.ColaboradorMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,13 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class ColaboradorController implements ColaboradorApi {
 
 	private final CriarColaboradorUseCase criarColaboradorUseCase;
-	private final ColaboradorRestMapper colaboradorRestMapper;
+	private final ColaboradorMapper colaboradorMapper;
 
 	@Override
 	@PreAuthorize("hasAnyRole('CREATOR','ADMIN')")
 	public ResponseEntity<ColaboradorResponse> create(@Valid @RequestBody ColaboradorCreateRequest request) {
-		var dto = criarColaboradorUseCase.execute(colaboradorRestMapper.toCommand(request));
-		return ResponseEntity.status(HttpStatus.CREATED).body(colaboradorRestMapper.toResponse(dto));
+		var dto = criarColaboradorUseCase.execute(colaboradorMapper.toCommand(request));
+		return ResponseEntity.status(HttpStatus.CREATED).body(colaboradorMapper.toResponse(dto));
 	}
 }
-

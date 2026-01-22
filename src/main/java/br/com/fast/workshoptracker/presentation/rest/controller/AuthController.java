@@ -12,7 +12,7 @@ import br.com.fast.workshoptracker.presentation.rest.dto.response.UsuarioRespons
 import br.com.fast.workshoptracker.presentation.openapi.api.AuthApi;
 import br.com.fast.workshoptracker.application.port.input.AutenticarUsuarioUseCase;
 import br.com.fast.workshoptracker.application.port.input.RegistrarUsuarioUseCase;
-import br.com.fast.workshoptracker.presentation.rest.mapper.AuthRestMapper;
+import br.com.fast.workshoptracker.presentation.rest.mapper.AuthMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -22,18 +22,17 @@ public class AuthController implements AuthApi {
 
 	private final RegistrarUsuarioUseCase registrarUsuarioUseCase;
 	private final AutenticarUsuarioUseCase autenticarUsuarioUseCase;
-	private final AuthRestMapper authRestMapper;
+	private final AuthMapper authMapper;
 
 	@Override
 	public ResponseEntity<UsuarioResponse> register(@Valid @RequestBody AuthRegisterRequest request) {
-		var dto = registrarUsuarioUseCase.execute(authRestMapper.toCommand(request));
-		return ResponseEntity.status(HttpStatus.CREATED).body(authRestMapper.toResponse(dto));
+		var dto = registrarUsuarioUseCase.execute(authMapper.toCommand(request));
+		return ResponseEntity.status(HttpStatus.CREATED).body(authMapper.toResponse(dto));
 	}
 
 	@Override
 	public ResponseEntity<AuthTokenResponse> login(@Valid @RequestBody AuthLoginRequest request) {
-		var dto = autenticarUsuarioUseCase.execute(authRestMapper.toCommand(request));
-		return ResponseEntity.ok(authRestMapper.toResponse(dto));
+		var dto = autenticarUsuarioUseCase.execute(authMapper.toCommand(request));
+		return ResponseEntity.ok(authMapper.toResponse(dto));
 	}
 }
-

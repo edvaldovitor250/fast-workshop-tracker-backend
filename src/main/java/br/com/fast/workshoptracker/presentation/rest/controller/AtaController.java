@@ -24,7 +24,7 @@ import br.com.fast.workshoptracker.application.port.input.AdicionarColaboradorAt
 import br.com.fast.workshoptracker.application.port.input.CriarAtaUseCase;
 import br.com.fast.workshoptracker.application.port.input.ListarParticipacoesUseCase;
 import br.com.fast.workshoptracker.application.port.input.RemoverColaboradorAtaUseCase;
-import br.com.fast.workshoptracker.presentation.rest.mapper.AtaRestMapper;
+import br.com.fast.workshoptracker.presentation.rest.mapper.AtaMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -36,13 +36,13 @@ public class AtaController implements AtaApi {
 	private final AdicionarColaboradorAtaUseCase adicionarColaboradorAtaUseCase;
 	private final RemoverColaboradorAtaUseCase removerColaboradorAtaUseCase;
 	private final ListarParticipacoesUseCase listarParticipacoesUseCase;
-	private final AtaRestMapper ataRestMapper;
+	private final AtaMapper ataMapper;
 
 	@Override
 	@PreAuthorize("hasAnyRole('CREATOR','ADMIN')")
 	public ResponseEntity<AtaResponse> create(@Valid @RequestBody AtaCreateRequest request) {
-		var dto = criarAtaUseCase.execute(ataRestMapper.toCommand(request));
-		return ResponseEntity.status(HttpStatus.CREATED).body(ataRestMapper.toResponse(dto));
+		var dto = criarAtaUseCase.execute(ataMapper.toCommand(request));
+		return ResponseEntity.status(HttpStatus.CREATED).body(ataMapper.toResponse(dto));
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class AtaController implements AtaApi {
 	) {
 		var cmd = new AdicionarColaboradorAtaCommand(workshopId, ataId, request.colaboradorId());
 		var dto = adicionarColaboradorAtaUseCase.execute(cmd);
-		return ResponseEntity.ok(ataRestMapper.toResponse(dto));
+		return ResponseEntity.ok(ataMapper.toResponse(dto));
 	}
 
 	@Override
@@ -71,8 +71,7 @@ public class AtaController implements AtaApi {
 			@RequestParam(required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate data
 	) {
 		var dtos = listarParticipacoesUseCase.execute(new ListarParticipacoesQuery(workshopNome, data));
-		var response = dtos.stream().map(ataRestMapper::toResponse).toList();
+		var response = dtos.stream().map(ataMapper::toResponse).toList();
 		return ResponseEntity.ok(response);
 	}
 }
-

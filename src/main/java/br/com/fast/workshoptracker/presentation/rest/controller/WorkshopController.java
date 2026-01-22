@@ -4,7 +4,7 @@ import br.com.fast.workshoptracker.presentation.rest.dto.request.WorkshopCreateR
 import br.com.fast.workshoptracker.presentation.rest.dto.response.WorkshopResponse;
 import br.com.fast.workshoptracker.presentation.openapi.api.WorkshopApi;
 import br.com.fast.workshoptracker.application.port.input.CriarWorkshopUseCase;
-import br.com.fast.workshoptracker.presentation.rest.mapper.WorkshopRestMapper;
+import br.com.fast.workshoptracker.presentation.rest.mapper.WorkshopMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,13 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class WorkshopController implements WorkshopApi {
 
 	private final CriarWorkshopUseCase criarWorkshopUseCase;
-	private final WorkshopRestMapper workshopRestMapper;
+	private final WorkshopMapper workshopMapper;
 
 	@Override
 	@PreAuthorize("hasAnyRole('CREATOR','ADMIN')")
 	public ResponseEntity<WorkshopResponse> create(@Valid @RequestBody WorkshopCreateRequest request) {
-		var dto = criarWorkshopUseCase.execute(workshopRestMapper.toCommand(request));
-		return ResponseEntity.status(HttpStatus.CREATED).body(workshopRestMapper.toResponse(dto));
+		var dto = criarWorkshopUseCase.execute(workshopMapper.toCommand(request));
+		return ResponseEntity.status(HttpStatus.CREATED).body(workshopMapper.toResponse(dto));
 	}
 }
-
