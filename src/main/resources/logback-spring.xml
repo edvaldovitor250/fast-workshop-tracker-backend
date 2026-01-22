@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+	
+	<springProperty scope="context" name="springAppName" source="spring.application.name"/>
+
+	<!-- Console Appender -->
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - [requestId=%X{requestId}] [method=%X{method}] [path=%X{path}] - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- File Appender -->
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/workshop-tracker.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>logs/workshop-tracker-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>10MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - [requestId=%X{requestId}] [method=%X{method}] [path=%X{path}] - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- Async Appender for Performance -->
+	<appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+		<queueSize>512</queueSize>
+		<appender-ref ref="FILE"/>
+	</appender>
+
+	<!-- Log levels -->
+	<logger name="br.com.fast.workshoptracker" level="DEBUG"/>
+	<logger name="org.springframework.web" level="INFO"/>
+	<logger name="org.springframework.security" level="INFO"/>
+	<logger name="org.hibernate.SQL" level="DEBUG"/>
+	<logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
+	<logger name="io.github.resilience4j" level="INFO"/>
+	<logger name="com.zaxxer.hikari" level="INFO"/>
+
+	<root level="INFO">
+		<appender-ref ref="CONSOLE"/>
+		<appender-ref ref="ASYNC"/>
+	</root>
+
+	<!-- Production profile with JSON logging -->
+	<springProfile name="prod">
+		<!-- Para produção, considere adicionar logstash-logback-encoder para JSON -->
+		<!-- 
+		<appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+			<encoder class="net.logstash.logback.encoder.LogstashEncoder">
+				<includeMdcKeyName>requestId</includeMdcKeyName>
+				<includeMdcKeyName>userId</includeMdcKeyName>
+				<includeMdcKeyName>method</includeMdcKeyName>
+				<includeMdcKeyName>path</includeMdcKeyName>
+			</encoder>
+		</appender>
+		-->
+	</springProfile>
+</configuration>

@@ -17,4 +17,6 @@ public interface AtaRepositoryPort {
 	List<ColaboradorWorkshopRowDTO> findParticipacoes(String workshopNome, LocalDate dataRealizacao);
 
 	Ata save(Ata ata);
+
+	long count();
 }

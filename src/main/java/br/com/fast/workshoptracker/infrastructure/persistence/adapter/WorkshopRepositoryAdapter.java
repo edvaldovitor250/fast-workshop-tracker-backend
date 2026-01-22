@@ -28,4 +28,9 @@ public class WorkshopRepositoryAdapter implements WorkshopRepositoryPort {
 	public Workshop save(Workshop workshop) {
 		return workshopRepository.save(workshop);
 	}
+
+	@Override
+	public long count() {
+		return workshopRepository.count();
+	}
 }

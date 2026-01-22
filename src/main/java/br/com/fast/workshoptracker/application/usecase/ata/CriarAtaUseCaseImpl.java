@@ -14,7 +14,9 @@ import br.com.fast.workshoptracker.domain.exception.Exceptions;
 import br.com.fast.workshoptracker.domain.exception.util.ExceptionUtils;
 import br.com.fast.workshoptracker.infrastructure.util.CollectionValidator;
 import br.com.fast.workshoptracker.infrastructure.util.EntityFinder;
+import br.com.fast.workshoptracker.infrastructure.observability.CustomMetrics;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,42 +30,47 @@ public class CriarAtaUseCaseImpl implements CriarAtaUseCase {
 	private final WorkshopRepositoryPort workshopRepository;
 	private final ColaboradorRepositoryPort colaboradorRepository;
 	private final AtaApplicationMapper ataMapper;
+	private final CustomMetrics customMetrics;
 
 	@Override
 	@Transactional
+	@CacheEvict(value = {"atas", "participacoes"}, allEntries = true)
 	public AtaDTO execute(CriarAtaCommand command) {
-		CollectionValidator.validateUniqueIds(command.colaboradoresIds(), "colaboradoresIds");
+		return customMetrics.timeBusinessOperation("criar-ata", () -> {
+			CollectionValidator.validateUniqueIds(command.colaboradoresIds(), "colaboradoresIds");
 
-		Workshop workshop = workshopRepository.findById(command.workshopId())
-				.orElseThrow(() -> Exceptions.notFound(
-						"Workshop não encontrado: id=" + command.workshopId(),
-						ExceptionUtils.context("workshopId", command.workshopId())
-				));
+			Workshop workshop = workshopRepository.findById(command.workshopId())
+					.orElseThrow(() -> Exceptions.notFound(
+							"Workshop não encontrado: id=" + command.workshopId(),
+							ExceptionUtils.context("workshopId", command.workshopId())
+					));
 
-		if (ataRepository.existsByWorkshopId(workshop.getId())) {
-			throw Exceptions.conflict(
-					"Já existe ata para o workshop: id=" + workshop.getId(),
-					ExceptionUtils.context("workshopId", workshop.getId())
-			);
-		}
+			if (ataRepository.existsByWorkshopId(workshop.getId())) {
+				throw Exceptions.conflict(
+						"Já existe ata para o workshop: id=" + workshop.getId(),
+						ExceptionUtils.context("workshopId", workshop.getId())
+				);
+			}
 
-		Ata ata = new Ata(workshop);
+			Ata ata = new Ata(workshop);
 
-		List<Long> colaboradoresIds = command.colaboradoresIds();
-		if (colaboradoresIds != null && !colaboradoresIds.isEmpty()) {
-			List<Colaborador> colaboradores = colaboradorRepository.findAllById(colaboradoresIds);
-			EntityFinder.validateAllFound(
-					colaboradoresIds,
-					colaboradores,
-					Colaborador::getId,
-					"Colaboradores",
-					"colaboradoresIds"
-			);
-			ata.getColaboradores().addAll(colaboradores);
-		}
+			List<Long> colaboradoresIds = command.colaboradoresIds();
+			if (colaboradoresIds != null && !colaboradoresIds.isEmpty()) {
+				List<Colaborador> colaboradores = colaboradorRepository.findAllById(colaboradoresIds);
+				EntityFinder.validateAllFound(
+						colaboradoresIds,
+						colaboradores,
+						Colaborador::getId,
+						"Colaboradores",
+						"colaboradoresIds"
+				);
+				ata.getColaboradores().addAll(colaboradores);
+			}
 
-		ata = ataRepository.save(ata);
-		return ataMapper.toDto(ata);
+			ata = ataRepository.save(ata);
+			customMetrics.incrementAtasCriadas();
+			return ataMapper.toDto(ata);
+		});
 	}
 }
 

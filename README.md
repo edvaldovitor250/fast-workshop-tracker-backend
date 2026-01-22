@@ -20,6 +20,11 @@ API REST para rastrear a participação de colaboradores em workshops, via **Ata
 - Bean Validation
 - Swagger UI (springdoc-openapi)
 - Segurança: **Bearer Token (JWT)** em `/api/**` (Swagger liberado)
+- **Observabilidade**: Micrometer + Prometheus + Actuator
+- **Resiliência**: Resilience4j (Circuit Breaker, Retry, Rate Limiter)
+- **Cache**: Caffeine
+- **Testes**: JUnit 5 + Mockito + TestContainers + Awaitility
+- **Tracing**: Micrometer Tracing + Zipkin
 
 ## Como subir o MySQL (Docker)
 
@@ -59,6 +64,32 @@ Nota (Windows/WSL): o default usa `DB_HOST=127.0.0.1` para evitar conflitos comu
 
 - `http://localhost:8080/swagger-ui.html`
 
+## Observabilidade e Monitoramento
+
+### Health Check
+```bash
+curl http://localhost:8080/actuator/health
+```
+
+### Métricas Prometheus
+```bash
+curl http://localhost:8080/actuator/prometheus
+```
+
+### Métricas Customizadas
+- `atas.criadas.total` - Total de atas criadas
+- `atas.colaboradores.adicionados.total` - Colaboradores adicionados
+- `auth.login.total{status="success"}` - Logins bem-sucedidos
+- `business.operation.duration{operation="criar-ata"}` - Duração de operações
+- `cache.hits.total{cache="atas"}` - Cache hits
+
+### Endpoints Actuator Disponíveis
+- `/actuator/health` - Status da aplicação
+- `/actuator/metrics` - Todas as métricas
+- `/actuator/prometheus` - Formato Prometheus
+- `/actuator/caches` - Informações de cache
+- `/actuator/loggers` - Níveis de log
+
 ## Autenticação (JWT Bearer Token)
 
 Todos os endpoints em `/api/**` exigem autenticação via header:
@@ -94,9 +125,27 @@ Por padrão, um usuário registrado recebe as roles: `CREATOR` e `READER`.
 
 ## Como rodar testes
 
-- `./mvnw clean test`
+```bash
+# Todos os testes
+./mvnw clean test
 
-Os testes usam **H2 em modo MySQL** (`src/test/resources/application-test.yaml`) e as mesmas migrations do Flyway.
+# Apenas testes unitários
+./mvnw test -Dtest="*UseCaseImplTest"
+
+# Apenas testes de integração (com TestContainers)
+./mvnw test -Dtest="*IntegrationTest"
+
+# Apenas testes de performance
+./mvnw test -Dtest="PerformanceTest"
+
+# Apenas testes de segurança
+./mvnw test -Dtest="SecurityIntegrationTest"
+```
+
+Os testes usam:
+- **Testes Unitários**: H2 em modo MySQL
+- **Testes de Integração**: TestContainers com MySQL real
+- **Cobertura**: Unitários, Integração, Performance, Segurança
 
 ## Exemplos (curl)
 

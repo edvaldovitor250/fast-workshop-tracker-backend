@@ -12,6 +12,7 @@ import br.com.fast.workshoptracker.domain.exception.codes.BusinessErrorCode;
 import br.com.fast.workshoptracker.domain.exception.codes.ValidationErrorCode;
 import br.com.fast.workshoptracker.domain.exception.domain.BusinessException;
 import br.com.fast.workshoptracker.domain.exception.validation.ValidationException;
+import br.com.fast.workshoptracker.infrastructure.observability.CustomMetrics;
 import org.mapstruct.factory.Mappers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,13 +43,15 @@ class CriarAtaUseCaseImplTest {
 	private WorkshopRepositoryPort workshopRepository;
 	@Mock
 	private ColaboradorRepositoryPort colaboradorRepository;
+	@Mock
+	private CustomMetrics customMetrics;
 
 	private CriarAtaUseCaseImpl useCase;
 
 	@BeforeEach
 	void setUp() {
 		AtaApplicationMapper ataMapper = Mappers.getMapper(AtaApplicationMapper.class);
-		useCase = new CriarAtaUseCaseImpl(ataRepository, workshopRepository, colaboradorRepository, ataMapper);
+		useCase = new CriarAtaUseCaseImpl(ataRepository, workshopRepository, colaboradorRepository, ataMapper, customMetrics);
 	}
 
 	@Test

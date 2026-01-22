@@ -1,0 +1,130 @@
+{
+  "dashboard": {
+    "title": "Workshop Tracker - Monitoring Dashboard",
+    "tags": ["workshop-tracker", "spring-boot", "java"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "title": "Atas Criadas (Total)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "atas_criadas_total",
+            "legendFormat": "Total"
+          }
+        ]
+      },
+      {
+        "title": "Taxa de Criação de Atas",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(atas_criadas_total[5m])",
+            "legendFormat": "Atas/min"
+          }
+        ]
+      },
+      {
+        "title": "Tempo de Resposta (p95)",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(business_operation_duration_seconds_bucket[5m]))",
+            "legendFormat": "{{operation}}"
+          }
+        ]
+      },
+      {
+        "title": "Cache Hit Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(cache_hits_total[5m]) / (rate(cache_hits_total[5m]) + rate(cache_misses_total[5m]))",
+            "legendFormat": "{{cache}}"
+          }
+        ]
+      },
+      {
+        "title": "Circuit Breaker Status",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "resilience4j_circuitbreaker_state",
+            "legendFormat": "{{name}}"
+          }
+        ]
+      },
+      {
+        "title": "Requests por Segundo",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(http_server_requests_seconds_count[1m])",
+            "legendFormat": "{{uri}}"
+          }
+        ]
+      },
+      {
+        "title": "Database Connection Pool",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "hikaricp_connections_active",
+            "legendFormat": "Active"
+          },
+          {
+            "expr": "hikaricp_connections_idle",
+            "legendFormat": "Idle"
+          },
+          {
+            "expr": "hikaricp_connections",
+            "legendFormat": "Total"
+          }
+        ]
+      },
+      {
+        "title": "Erros por Tipo",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(errors_total[5m])",
+            "legendFormat": "{{type}} - {{code}}"
+          }
+        ]
+      },
+      {
+        "title": "JVM Memory Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "jvm_memory_used_bytes{area=\"heap\"}",
+            "legendFormat": "Heap Used"
+          },
+          {
+            "expr": "jvm_memory_max_bytes{area=\"heap\"}",
+            "legendFormat": "Heap Max"
+          }
+        ]
+      },
+      {
+        "title": "Autenticações",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(auth_login_total{status=\"success\"}[5m])",
+            "legendFormat": "Success"
+          },
+          {
+            "expr": "rate(auth_login_total{status=\"failed\"}[5m])",
+            "legendFormat": "Failed"
+          }
+        ]
+      }
+    ],
+    "refresh": "10s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    }
+  }
+}

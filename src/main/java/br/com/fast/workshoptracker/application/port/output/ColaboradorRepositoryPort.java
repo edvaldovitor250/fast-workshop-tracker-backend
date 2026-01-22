@@ -13,4 +13,6 @@ public interface ColaboradorRepositoryPort {
 	boolean existsById(Long id);
 
 	Colaborador save(Colaborador colaborador);
+
+	long count();
 }

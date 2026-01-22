@@ -34,4 +34,9 @@ public class ColaboradorRepositoryAdapter implements ColaboradorRepositoryPort {
 	public Colaborador save(Colaborador colaborador) {
 		return colaboradorRepository.save(colaborador);
 	}
+
+	@Override
+	public long count() {
+		return colaboradorRepository.count();
+	}
 }

@@ -10,4 +10,6 @@ public interface WorkshopRepositoryPort {
 	boolean existsById(Long id);
 
 	Workshop save(Workshop workshop);
+
+	long count();
 }

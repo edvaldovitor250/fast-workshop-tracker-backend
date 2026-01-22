@@ -51,4 +51,9 @@ public class AtaRepositoryAdapter implements AtaRepositoryPort {
 	public Ata save(Ata ata) {
 		return ataRepository.save(ata);
 	}
+
+	@Override
+	public long count() {
+		return ataRepository.count();
+	}
 }
