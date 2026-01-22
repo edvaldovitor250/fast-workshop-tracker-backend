@@ -166,9 +166,9 @@ public final class AtaDocs {
 			        </tr>
 			        <tr>
 			          <td><strong>data</strong></td>
-			          <td>`@DateTimeFormat(pattern = "dd/MM/yyyy")`</td>
-			          <td>Filtra por data (dd/MM/yyyy).</td>
-			          <td>20/01/2026</td>
+			          <td>-</td>
+				          <td>Filtra por data (dd/MM/yyyy; tambem aceita yyyy-MM-dd por compatibilidade).</td>
+				          <td>20/01/2026</td>
 			        </tr>
 			      </tbody>
 			    </table>

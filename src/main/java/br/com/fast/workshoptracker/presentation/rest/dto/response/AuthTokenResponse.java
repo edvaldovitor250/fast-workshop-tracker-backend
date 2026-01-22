@@ -1,15 +1,16 @@
 package br.com.fast.workshoptracker.presentation.rest.dto.response;
 
+import java.time.Instant;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
+
 import br.com.fast.workshoptracker.presentation.rest.validation.auth.jwt.JwtAccessToken;
 import br.com.fast.workshoptracker.presentation.rest.validation.auth.jwt.JwtExpiresAt;
 import br.com.fast.workshoptracker.presentation.rest.validation.auth.jwt.JwtRoles;
 import br.com.fast.workshoptracker.presentation.rest.validation.auth.jwt.JwtTokenType;
 import br.com.fast.workshoptracker.presentation.rest.validation.usuario.RoleName;
 import io.swagger.v3.oas.annotations.media.Schema;
-
-import java.time.Instant;
-import java.util.List;
 
 public record AuthTokenResponse(
 		@JwtTokenType
@@ -22,7 +23,7 @@ public record AuthTokenResponse(
 
 		@JwtExpiresAt
 		@JsonFormat(pattern = "dd/MM/yyyy HH:mm:ssXXX", timezone = "America/Sao_Paulo")
-		@Schema(example = "20/01/2026 18:30:00-03:00")
+		@Schema(example = "20/01/2026 21:30:00-03:00")
 		Instant expiresAt,
 
 		@JwtRoles

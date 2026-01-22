@@ -1,26 +1,25 @@
 package br.com.fast.workshoptracker.presentation.openapi.api;
 
+import br.com.fast.workshoptracker.presentation.openapi.docs.AtaDocs;
+import br.com.fast.workshoptracker.presentation.openapi.docs.CommonErrorDocs;
 import br.com.fast.workshoptracker.presentation.rest.dto.request.AtaAddColaboradorRequest;
 import br.com.fast.workshoptracker.presentation.rest.dto.request.AtaCreateRequest;
 import br.com.fast.workshoptracker.presentation.rest.dto.response.AtaResponse;
 import br.com.fast.workshoptracker.presentation.rest.dto.response.ColaboradorParticipacoesResponse;
 import br.com.fast.workshoptracker.presentation.rest.dto.response.ErrorResponse;
-import br.com.fast.workshoptracker.presentation.openapi.docs.AtaDocs;
-import br.com.fast.workshoptracker.presentation.openapi.docs.CommonErrorDocs;
 import br.com.fast.workshoptracker.presentation.rest.validation.ata.AtaId;
 import br.com.fast.workshoptracker.presentation.rest.validation.colaborador.ColaboradorId;
 import br.com.fast.workshoptracker.presentation.rest.validation.workshop.WorkshopId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -203,7 +202,11 @@ public interface AtaApi {
 			@Parameter(description = "Filtro por nome do workshop (contem, case-insensitive)", example = "spring")
 			@RequestParam(required = false) String workshopNome,
 
-			@Parameter(description = "Formato dd/MM/yyyy", example = "20/01/2026")
-			@RequestParam(required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate data
+			@Parameter(
+				description = "Data do workshop (dd/MM/yyyy; tambem aceita yyyy-MM-dd por compatibilidade)",
+				example = "20/01/2026",
+					schema = @Schema(type = "string", format = "date")
+			)
+			@RequestParam(required = false) LocalDate data
 	);
 }

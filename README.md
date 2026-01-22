@@ -116,7 +116,7 @@ Por padrão, um usuário registrado recebe as roles: `CREATOR` e `READER`.
 - `POST /api/atas`
 - `PUT /api/workshops/{workshopId}/atas/{ataId}`
 - `DELETE /api/atas/{ataId}/colaboradores/{colaboradorId}`
-- `GET /api/atas` (com filtros opcionais `workshopNome` e/ou `data=yyyy-MM-dd`, aplicando AND)
+- `GET /api/atas` (com filtros opcionais `workshopNome` e/ou `data=dd/MM/yyyy`, aplicando AND; aceita também `yyyy-MM-dd` por compatibilidade)
 
 ### Autorização (roles)
 
@@ -166,7 +166,7 @@ TOKEN=$(curl -s -H "Content-Type: application/json" \
 
 ```bash
 curl -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-  -d '{ "nome": "Workshop Spring", "dataRealizacao": "2026-01-20", "descricao": "..." }' \
+  -d '{ "nome": "Workshop Spring", "dataRealizacao": "20/01/2026", "descricao": "..." }' \
   http://localhost:8080/api/workshops
 
 curl -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
@@ -195,5 +195,5 @@ curl -H "Authorization: Bearer $TOKEN" -X DELETE \
 curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/api/atas
 
 curl -H "Authorization: Bearer $TOKEN" \
-  "http://localhost:8080/api/atas?workshopNome=spring&data=2026-01-20"
+  "http://localhost:8080/api/atas?workshopNome=spring&data=20/01/2026"
 ```

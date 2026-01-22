@@ -44,6 +44,7 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana-dashboard.json:/var/lib/grafana/dashboards/workshop-tracker-dashboard.json
     depends_on:
       - prometheus
 

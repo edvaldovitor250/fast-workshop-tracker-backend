@@ -1,5 +1,10 @@
 package br.com.fast.workshoptracker.application.usecase.ata;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import br.com.fast.workshoptracker.application.dto.command.CriarAtaCommand;
 import br.com.fast.workshoptracker.application.dto.query.AtaDTO;
 import br.com.fast.workshoptracker.application.mapper.AtaApplicationMapper;
@@ -12,15 +17,10 @@ import br.com.fast.workshoptracker.domain.entity.Colaborador;
 import br.com.fast.workshoptracker.domain.entity.Workshop;
 import br.com.fast.workshoptracker.domain.exception.Exceptions;
 import br.com.fast.workshoptracker.domain.exception.util.ExceptionUtils;
+import br.com.fast.workshoptracker.infrastructure.observability.CustomMetrics;
 import br.com.fast.workshoptracker.infrastructure.util.CollectionValidator;
 import br.com.fast.workshoptracker.infrastructure.util.EntityFinder;
-import br.com.fast.workshoptracker.infrastructure.observability.CustomMetrics;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +34,6 @@ public class CriarAtaUseCaseImpl implements CriarAtaUseCase {
 
 	@Override
 	@Transactional
-	@CacheEvict(value = {"atas", "participacoes"}, allEntries = true)
 	public AtaDTO execute(CriarAtaCommand command) {
 		return customMetrics.timeBusinessOperation("criar-ata", () -> {
 			CollectionValidator.validateUniqueIds(command.colaboradoresIds(), "colaboradoresIds");

@@ -103,7 +103,7 @@ TOKEN=$(curl -s -H "Content-Type: application/json" \
 # Criar workshop
 curl -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"nome":"Workshop Cache","dataRealizacao":"2026-01-21"}' \
+  -d '{"nome":"Workshop Cache","dataRealizacao":"21/01/2026"}' \
   http://localhost:8080/api/workshops
 
 # Verificar cache
@@ -181,7 +181,7 @@ TOKEN=$(curl -s -H "Content-Type: application/json" \
 # 2. Criar workshop
 WORKSHOP=$(curl -s -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"nome":"Java Avançado","dataRealizacao":"2026-01-21"}' \
+  -d '{"nome":"Java Avançado","dataRealizacao":"21/01/2026"}' \
   http://localhost:8080/api/workshops | jq -r .id)
 
 # 3. Criar colaborador

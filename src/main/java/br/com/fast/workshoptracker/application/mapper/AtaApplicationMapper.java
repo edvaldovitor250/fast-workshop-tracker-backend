@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
 import br.com.fast.workshoptracker.application.dto.query.AtaDTO;
 import br.com.fast.workshoptracker.application.dto.query.ColaboradorDTO;
@@ -12,7 +13,7 @@ import br.com.fast.workshoptracker.domain.entity.Ata;
 import br.com.fast.workshoptracker.domain.entity.Colaborador;
 import br.com.fast.workshoptracker.domain.entity.Workshop;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface AtaApplicationMapper {
 
 	AtaDTO toDto(Ata entity);

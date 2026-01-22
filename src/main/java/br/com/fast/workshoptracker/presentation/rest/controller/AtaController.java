@@ -3,7 +3,6 @@ package br.com.fast.workshoptracker.presentation.rest.controller;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -68,7 +67,7 @@ public class AtaController implements AtaApi {
 	@PreAuthorize("hasAnyRole('READER','CREATOR','ADMIN')")
 	public ResponseEntity<List<ColaboradorParticipacoesResponse>> listarParticipacoes(
 			@RequestParam(required = false) String workshopNome,
-			@RequestParam(required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate data
+			@RequestParam(required = false) LocalDate data
 	) {
 		var dtos = listarParticipacoesUseCase.execute(new ListarParticipacoesQuery(workshopNome, data));
 		var response = dtos.stream().map(ataMapper::toResponse).toList();

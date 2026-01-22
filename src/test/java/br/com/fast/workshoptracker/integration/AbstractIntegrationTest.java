@@ -10,7 +10,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
  * Classe base para testes de integração com TestContainers.
  * Fornece container MySQL compartilhado entre os testes.
  */
-@Testcontainers
+@Testcontainers(disabledWithoutDocker = true)
 public abstract class AbstractIntegrationTest {
 
 	@Container

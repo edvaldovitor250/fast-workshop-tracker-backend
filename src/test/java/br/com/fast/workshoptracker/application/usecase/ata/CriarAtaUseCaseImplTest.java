@@ -1,6 +1,9 @@
 package br.com.fast.workshoptracker.application.usecase.ata;
 
 import br.com.fast.workshoptracker.application.dto.command.CriarAtaCommand;
+import br.com.fast.workshoptracker.application.dto.query.AtaDTO;
+import br.com.fast.workshoptracker.application.dto.query.ColaboradorDTO;
+import br.com.fast.workshoptracker.application.dto.query.WorkshopDTO;
 import br.com.fast.workshoptracker.application.mapper.AtaApplicationMapper;
 import br.com.fast.workshoptracker.application.port.output.AtaRepositoryPort;
 import br.com.fast.workshoptracker.application.port.output.ColaboradorRepositoryPort;
@@ -13,7 +16,6 @@ import br.com.fast.workshoptracker.domain.exception.codes.ValidationErrorCode;
 import br.com.fast.workshoptracker.domain.exception.domain.BusinessException;
 import br.com.fast.workshoptracker.domain.exception.validation.ValidationException;
 import br.com.fast.workshoptracker.infrastructure.observability.CustomMetrics;
-import org.mapstruct.factory.Mappers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +26,7 @@ import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -50,7 +53,13 @@ class CriarAtaUseCaseImplTest {
 
 	@BeforeEach
 	void setUp() {
-		AtaApplicationMapper ataMapper = Mappers.getMapper(AtaApplicationMapper.class);
+		when(customMetrics.timeBusinessOperation(any(), any())).thenAnswer(inv -> {
+			@SuppressWarnings("unchecked")
+			Supplier<Object> supplier = (Supplier<Object>) inv.getArgument(1);
+			return supplier.get();
+		});
+
+		AtaApplicationMapper ataMapper = createTestMapper();
 		useCase = new CriarAtaUseCaseImpl(ataRepository, workshopRepository, colaboradorRepository, ataMapper, customMetrics);
 	}
 
@@ -139,5 +148,42 @@ class CriarAtaUseCaseImplTest {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private static AtaApplicationMapper createTestMapper() {
+		return new AtaApplicationMapper() {
+			@Override
+			public AtaDTO toDto(Ata entity) {
+				if (entity == null) {
+					return null;
+				}
+				return new AtaDTO(
+						entity.getId(),
+						toDto(entity.getWorkshop()),
+						toColaboradorDtoList(entity.getColaboradores())
+				);
+			}
+
+			@Override
+			public WorkshopDTO toDto(Workshop entity) {
+				if (entity == null) {
+					return null;
+				}
+				return new WorkshopDTO(
+						entity.getId(),
+						entity.getNome(),
+						entity.getDataRealizacao(),
+						entity.getDescricao()
+				);
+			}
+
+			@Override
+			public ColaboradorDTO toDto(Colaborador entity) {
+				if (entity == null) {
+					return null;
+				}
+				return new ColaboradorDTO(entity.getId(), entity.getNome());
+			}
+		};
 	}
 }

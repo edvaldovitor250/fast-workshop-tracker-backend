@@ -13,16 +13,16 @@
 
 	<!-- File Appender -->
 	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>logs/workshop-tracker.log</file>
+		<file>logs/${springAppName}.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>logs/workshop-tracker-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<fileNamePattern>logs/${springAppName}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
 				<maxFileSize>10MB</maxFileSize>
 			</timeBasedFileNamingAndTriggeringPolicy>
 			<maxHistory>30</maxHistory>
 		</rollingPolicy>
 		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - [requestId=%X{requestId}] [method=%X{method}] [path=%X{path}] - %msg%n</pattern>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - [app=${springAppName}] [requestId=%X{requestId}] [method=%X{method}] [path=%X{path}] - %msg%n</pattern>
 		</encoder>
 	</appender>
 
@@ -38,7 +38,6 @@
 	<logger name="org.springframework.security" level="INFO"/>
 	<logger name="org.hibernate.SQL" level="DEBUG"/>
 	<logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
-	<logger name="io.github.resilience4j" level="INFO"/>
 	<logger name="com.zaxxer.hikari" level="INFO"/>
 
 	<root level="INFO">
