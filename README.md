@@ -1,7 +1,6 @@
 <body>
   <header>
     <h1 align="center">📘 Workshop Tracker – API REST (Java 21 + Spring Boot 3.2 + MySQL)</h1>
-
     <p align="center">
       <img src="https://img.shields.io/badge/spring--boot-3.2.12-6DB33F" alt="Spring Boot 3.2.12"/>
       <img src="https://img.shields.io/badge/java-21-orange" alt="Java 21"/>
@@ -14,7 +13,6 @@
       <img src="https://img.shields.io/badge/mapping-MapStruct-lightgrey" alt="MapStruct"/>
       <img src="https://img.shields.io/badge/build-Maven-CC0000" alt="Maven"/>
     </p>
-
     <p align="center">
       Desafio <strong>FAST – Soluções Tecnológicas</strong> (Etapa Backend): API REST para cadastrar workshops,
       colaboradores e processar atas de presença, com listagem de participações e filtros.
@@ -41,7 +39,6 @@
       <li><a href="#boas-praticas">Boas Práticas &amp; Padrões</a></li>
       <li><a href="#licenca-autor">Licença &amp; Autor</a></li>
     </ol>
-
     <section id="visao-geral">
       <h2>ℹ️ Visão Geral</h2>
       <p>
@@ -49,14 +46,12 @@
         <strong>atas de presença</strong>. O domínio foi modelado para manter consistência e evitar duplicidades, garantindo
         consultas eficientes e contratos bem documentados via Swagger.
       </p>
-
       <h3>📌 Definições (domínio)</h3>
       <ul>
         <li><strong>Colaborador</strong>: <code>id</code>, <code>nome</code></li>
         <li><strong>Workshop</strong>: <code>id</code>, <code>nome</code>, <code>dataRealizacao</code>, <code>descricao</code></li>
         <li><strong>Ata</strong>: <code>id</code>, <code>workshop</code>, <code>colaboradores</code> (presenças)</li>
       </ul>
-
       <h3>✅ Regras do domínio implementadas</h3>
       <ul>
         <li><strong>1 ata por workshop</strong>: constraint única <code>uk_ata_workshop</code> em <code>ata.workshop_id</code>.</li>
@@ -65,13 +60,11 @@
         <li>Remover colaborador que <strong>não está</strong> na ata retorna <strong>404</strong>.</li>
       </ul>
     </section>
-
     <section id="requisitos">
       <h2>📋 Requisitos do Desafio (FAST)</h2>
       <p>
         <strong>Desafio 1a – Etapa Backend</strong>: construir uma API REST em Java para listar detalhes de workshops e presença de colaboradores.
       </p>
-
       <h3>Processamento de Atas</h3>
       <ul>
         <li><code>POST /api/workshops</code> — cadastrar Workshop</li>
@@ -80,14 +73,12 @@
         <li><code>PUT /api/workshops/&lt;workshopId&gt;/atas/&lt;ataId&gt;</code> — adicionar colaborador em uma Ata</li>
         <li><code>DELETE /api/atas/&lt;ataId&gt;/colaboradores/&lt;colaboradorId&gt;</code> — remover colaborador de uma Ata</li>
       </ul>
-
       <h3>Identificação de Colaboradores Presentes</h3>
       <ul>
         <li><code>GET /api/atas</code> — lista colaboradores em ordem alfabética e workshops que participaram</li>
         <li><code>GET /api/atas?workshopNome=&lt;nome&gt;</code> — filtra por nome do workshop</li>
         <li><code>GET /api/atas?data=&lt;data&gt;</code> — filtra por data de realização do workshop</li>
       </ul>
-
       <h3>Bônus (opcional) — implementado</h3>
       <ul>
         <li><strong>Persistência</strong>: MySQL + Flyway (migrações versionadas)</li>
@@ -96,7 +87,6 @@
         <li><strong>Observabilidade</strong>: Actuator + Prometheus + Tracing Zipkin</li>
       </ul>
     </section>
-
     <section id="arquitetura-e-pacotes">
       <h2>🏗️ Arquitetura &amp; Pacotes</h2>
       <p>
@@ -104,7 +94,6 @@
         a camada de <em>aplicação</em> define portas (interfaces), e a infraestrutura fornece adaptações concretas
         (persistência, segurança, etc.).
       </p>
-
       <pre><code>📦src/main/java/br/com/fast/workshoptracker
  ┣ 📂presentation
  ┃ ┣ 📂rest
@@ -134,27 +123,23 @@
    ┣ 📂observability  (Actuator health custom + métricas custom)
    ┗ 📂util           (normalização, validações, formatters)
 </code></pre>
-
       <h3>Fluxos principais</h3>
       <ul>
         <li><strong>POST /api/atas</strong> valida unicidade e existência de entidades e cria a ata (1 por workshop).</li>
         <li><strong>GET /api/atas</strong> usa uma query otimizada que retorna linhas (colaborador x workshop) e agrega em memória por colaborador.</li>
       </ul>
     </section>
-
     <section id="modelo-de-dados">
       <h2>🗄️ Modelo de Dados (ER)</h2>
       <p>
         A persistência é relacional (MySQL). O schema é criado/validado via <strong>Flyway</strong> com migrações versionadas.
       </p>
-
       <h3>Entidades e relacionamentos</h3>
       <ul>
         <li><strong>workshop</strong> (1) — (1) <strong>ata</strong> (por constraint única)</li>
         <li><strong>ata</strong> (N) — (N) <strong>colaborador</strong> via tabela de junção <strong>ata_colaborador</strong></li>
         <li><strong>usuario</strong> (1) — (N) <strong>usuario_role</strong> (roles)</li>
       </ul>
-
       <details>
         <summary><b>Diagrama ER (Mermaid)</b></summary>
         <pre><code class="language-mermaid">erDiagram
@@ -199,7 +184,6 @@
   }
 </code></pre>
       </details>
-
       <details>
         <summary><b>SQL (Flyway)</b></summary>
         <p>Migração inicial do domínio (workshops/atas/colaboradores):</p>
@@ -230,7 +214,6 @@ CREATE TABLE ata_colaborador (
     CONSTRAINT fk_ata_colaborador_colaborador FOREIGN KEY (colaborador_id) REFERENCES colaborador (id)
 );
 </code></pre>
-
         <p>Migração de autenticação/usuários:</p>
         <pre><code class="language-sql">CREATE TABLE usuario (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -249,7 +232,6 @@ CREATE TABLE usuario_role (
 </code></pre>
       </details>
     </section>
-
     <section id="tech-stack">
       <h2>🛠️ Tech Stack &amp; Dependências</h2>
       <ul>
@@ -262,7 +244,6 @@ CREATE TABLE usuario_role (
         <li><strong>Actuator</strong> + Micrometer (Prometheus) + Tracing (Brave/Zipkin)</li>
         <li><strong>Testes</strong>: JUnit 5 + Mockito + Testcontainers + Awaitility</li>
       </ul>
-
       <details>
         <summary><b>Observação sobre cache/resiliência</b></summary>
         <p>
@@ -271,16 +252,13 @@ CREATE TABLE usuario_role (
         </p>
       </details>
     </section>
-
     <section id="como-rodar">
       <h2>🚀 Como Rodar (Docker &amp; Local)</h2>
-
       <h3>Pré-requisitos</h3>
       <ul>
         <li>Java 21</li>
         <li>(Opcional) Docker + Docker Compose</li>
       </ul>
-
       <h3>Opção A) MySQL via Docker (recomendado)</h3>
       <pre><code class="language-bash"># subir apenas o banco
 docker compose -f compose.yaml up -d
@@ -288,7 +266,6 @@ docker compose -f compose.yaml up -d
 # executar a API
 ./mvnw spring-boot:run
 </code></pre>
-
       <h3>Opção B) Stack de monitoramento (MySQL + Prometheus + Grafana + Zipkin)</h3>
       <pre><code class="language-bash">docker compose -f docker-compose-monitoring.yaml up -d
 
@@ -298,7 +275,6 @@ docker compose -f compose.yaml up -d
       <p>
         Observação: o Prometheus está configurado para coletar métricas em <code>host.docker.internal:8080</code>.
       </p>
-
       <h3>Opção C) Sem MySQL (H2 em memória)</h3>
       <p>
         O profile <code>local</code> usa H2 em memória (modo MySQL) + Flyway.
@@ -309,7 +285,6 @@ docker compose -f compose.yaml up -d
 # Bash/Zsh
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=local
 </code></pre>
-
       <h3>Variáveis de ambiente (principais)</h3>
       <ul>
         <li><code>SERVER_PORT</code> (default: 8080)</li>
@@ -317,20 +292,17 @@ docker compose -f compose.yaml up -d
         <li><code>ZIPKIN_URL</code> (default: <code>http://localhost:9411/api/v2/spans</code>)</li>
         <li><code>API_JWT_SECRET</code>, <code>API_JWT_ISSUER</code>, <code>API_JWT_TTL</code></li>
       </ul>
-
       <details>
         <summary><b>Se a porta 8080 estiver em uso</b></summary>
         <pre><code class="language-powershell">$env:SERVER_PORT=8081; ./mvnw spring-boot:run</code></pre>
       </details>
     </section>
-
     <section id="seguranca">
       <h2>🔐 Segurança (JWT / Roles)</h2>
       <p>
         Todos os endpoints em <code>/api/**</code> exigem autenticação JWT, <strong>exceto</strong>:
         <code>/api/auth/register</code>, <code>/api/auth/login</code> e rotas do Swagger (<code>/swagger-ui</code>, <code>/v3/api-docs</code>).
       </p>
-
       <h3>Roles</h3>
       <ul>
         <li><code>ADMIN</code> — acesso total</li>
@@ -340,7 +312,6 @@ docker compose -f compose.yaml up -d
       <p>
         Por padrão, um usuário registrado recebe as roles: <code>CREATOR</code> e <code>READER</code>.
       </p>
-
       <h3>Como obter token</h3>
       <ol>
         <li>Registrar: <code>POST /api/auth/register</code></li>
@@ -352,13 +323,11 @@ docker compose -f compose.yaml up -d
         No Swagger UI, clique em <strong>Authorize</strong> e cole apenas o token (sem o prefixo <code>Bearer</code>).
       </p>
     </section>
-
     <section id="endpoints">
       <h2>📦 Endpoints (Swagger / Exemplos)</h2>
       <p>
         Swagger UI: <code>http://localhost:8080/swagger-ui.html</code>
       </p>
-
       <h3>Resumo</h3>
       <table>
         <thead>
@@ -429,7 +398,6 @@ docker compose -f compose.yaml up -d
           </tr>
         </tbody>
       </table>
-
       <h3>Exemplos (curl)</h3>
       <details open>
         <summary><b>1) Registrar + login</b></summary>
@@ -442,7 +410,6 @@ TOKEN=$(curl -s -H "Content-Type: application/json" \
   http://localhost:8080/api/auth/login | jq -r .accessToken)
 </code></pre>
       </details>
-
       <details>
         <summary><b>2) Criar workshop + colaborador + ata</b></summary>
         <pre><code class="language-bash">curl -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
@@ -458,7 +425,6 @@ curl -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
   http://localhost:8080/api/atas
 </code></pre>
       </details>
-
       <details>
         <summary><b>3) Adicionar / remover colaborador na ata</b></summary>
         <pre><code class="language-bash">curl -H "Authorization: Bearer $TOKEN" -X PUT -H "Content-Type: application/json" \
@@ -469,7 +435,6 @@ curl -H "Authorization: Bearer $TOKEN" -X DELETE \
   http://localhost:8080/api/atas/1/colaboradores/2
 </code></pre>
       </details>
-
       <details>
         <summary><b>4) Listar participações (com filtros)</b></summary>
         <pre><code class="language-bash"># lista geral
@@ -483,17 +448,14 @@ curl -H "Authorization: Bearer $TOKEN" "http://localhost:8080/api/atas?data=20/0
 </code></pre>
       </details>
     </section>
-
     <section id="formatos">
       <h2>📐 Formatos (Datas, Ordenação e Filtros)</h2>
-
       <h3>Datas</h3>
       <ul>
         <li><strong>JSON</strong> (<code>dataRealizacao</code>): <code>dd/MM/yyyy</code> (ex.: <code>20/01/2026</code>)</li>
         <li><strong>Query param</strong> (<code>data</code> em <code>GET /api/atas</code>): <code>dd/MM/yyyy</code> (compatível com <code>yyyy-MM-dd</code>)</li>
         <li><strong>Timestamp em erros</strong>: <code>dd/MM/yyyy HH:mm:ssXXX</code> (ex.: <code>20/01/2026 21:55:35-03:00</code>)</li>
       </ul>
-
       <h3>Filtros e ordenação em <code>GET /api/atas</code></h3>
       <ul>
         <li>Filtros opcionais: <code>workshopNome</code> (contém, case-insensitive) e <code>data</code> (igualdade exata de data).</li>
@@ -501,14 +463,12 @@ curl -H "Authorization: Bearer $TOKEN" "http://localhost:8080/api/atas?data=20/0
         <li>Ordenação do resultado: <strong>colaborador.nome ASC</strong>, depois <strong>workshop.dataRealizacao ASC</strong>, depois <strong>workshop.nome ASC</strong>.</li>
       </ul>
     </section>
-
     <section id="tratamento-erros">
       <h2>🚧 Tratamento de Erros</h2>
       <p>
         A API padroniza erros em <code>ErrorResponse</code> e mapeia exceções de forma consistente
         (<code>400</code> validação/JSON, <code>401/403</code> segurança, <code>404</code> não encontrado, <code>409</code> conflito, <code>500</code> erro interno).
       </p>
-
       <h3>Formato do erro</h3>
       <pre><code class="language-json">{
   "exceptionId": "9d6e08ae-9d72-4e59-8f0a-0c49f3d5b5f2",
@@ -527,10 +487,8 @@ curl -H "Authorization: Bearer $TOKEN" "http://localhost:8080/api/atas?data=20/0
   }
 }</code></pre>
     </section>
-
     <section id="observabilidade">
       <h2>📈 Observabilidade (Actuator / Prometheus / Zipkin)</h2>
-
       <h3>URLs úteis</h3>
       <table>
         <thead>
@@ -568,14 +526,12 @@ curl -H "Authorization: Bearer $TOKEN" "http://localhost:8080/api/atas?data=20/0
           </tr>
         </tbody>
       </table>
-
       <h3>Métricas customizadas (Micrometer)</h3>
       <ul>
         <li><code>atas.criadas.total</code> — total de atas criadas</li>
         <li><code>auth.login.total{status="success|failed"}</code> — tentativas de login</li>
         <li><code>business.operation.duration{operation="..."}</code> — duração de operações</li>
       </ul>
-
       <details>
         <summary><b>PromQL – exemplos úteis</b></summary>
         <pre><code class="language-promql"># Taxa de criação de atas por minuto
@@ -586,13 +542,11 @@ histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket[5m])) by (
 </code></pre>
       </details>
     </section>
-
     <section id="testes">
       <h2>🧪 Testes</h2>
       <p>
         A suíte combina testes unitários, integração (Testcontainers) e cenários específicos (performance/segurança).
       </p>
-
       <pre><code class="language-bash"># Todos os testes
 ./mvnw clean test
 
@@ -603,7 +557,6 @@ histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket[5m])) by (
 ./mvnw test -Dtest="*IntegrationTest"
 </code></pre>
     </section>
-
     <section id="boas-praticas">
       <h2>🏅 Boas Práticas &amp; Padrões</h2>
       <ul>
@@ -617,14 +570,23 @@ histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket[5m])) by (
         <li><strong>Segurança por método</strong>: <code>@PreAuthorize</code> por endpoint (role-based).</li>
       </ul>
     </section>
-
     <section id="licenca-autor">
       <h2 align="center">💻 Autor</h2>
       <div align="center">
-        <p>Edvaldo Vitor</p>
-        <p><a href="https://github.com/edvaldovitor250" target="_blank" rel="noopener">github.com/edvaldovitor250</a></p>
-      </div>
+  <img
+    src="https://github.com/user-attachments/assets/af9619af-b4fc-4b18-b1a1-17a7e563741e"
+    alt="Edvaldo Vitor"
+    width="260"
+    height="260"
+  />
 
+  <p><strong>Edvaldo Vitor</strong></p>
+  <p>
+    <a href="https://github.com/edvaldovitor250" target="_blank" rel="noopener">
+      github.com/edvaldovitor250
+    </a>
+  </p>
+</div>
       <h2 align="center">📄 Licença</h2>
       <p align="center">
         Este projeto está licenciado sob a MIT License. Veja o arquivo <a href="LICENSE">LICENSE</a> para mais detalhes.
