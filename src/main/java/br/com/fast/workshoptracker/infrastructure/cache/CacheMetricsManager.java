@@ -10,8 +10,11 @@ import org.springframework.stereotype.Component;
 
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
 
+import java.util.Optional;
+
 /**
  * Gerenciador de métricas e estatísticas de cache.
+ * Responsável por monitorar, registrar e limpar caches da aplicação.
  */
 @Slf4j
 @Component
@@ -41,65 +44,83 @@ public class CacheMetricsManager {
 	 * Limpa cache específico.
 	 */
 	public void evictCache(String cacheName) {
-		Cache cache = cacheManager.getCache(cacheName);
-		if (cache != null) {
+		findCache(cacheName).ifPresent(cache -> {
 			cache.clear();
 			log.info("Cache limpo: {}", cacheName);
-		}
+		});
 	}
 
 	/**
 	 * Limpa todos os caches.
 	 */
 	public void evictAllCaches() {
-		cacheManager.getCacheNames().forEach(cacheName -> {
-			Cache cache = cacheManager.getCache(cacheName);
-			if (cache != null) {
-				cache.clear();
-			}
-		});
+		cacheManager.getCacheNames()
+				.stream()
+				.map(this::findCache)
+				.flatMap(Optional::stream)
+				.forEach(Cache::clear);
+		
 		log.info("Todos os caches foram limpos");
 	}
 
 	/**
 	 * Log de estatísticas de cache a cada 5 minutos.
 	 */
-	@Scheduled(fixedRate = 300000) // 5 minutos
+	@Scheduled(fixedRate = 300000)
 	public void logCacheStatistics() {
-		cacheManager.getCacheNames().forEach(cacheName -> {
-			Cache cache = cacheManager.getCache(cacheName);
-			if (cache != null) {
-				Object nativeCache = cache.getNativeCache();
-				if (nativeCache instanceof com.github.benmanes.caffeine.cache.Cache<?, ?> caffeineCache) {
-					CacheStats stats = caffeineCache.stats();
-					log.info("Cache Stats [{}] - Hits: {}, Misses: {}, HitRate: {:.2f}%, Size: {}",
-							cacheName,
-							stats.hitCount(),
-							stats.missCount(),
-							stats.hitRate() * 100,
-							caffeineCache.estimatedSize());
-				}
-			}
-		});
+		cacheManager.getCacheNames().forEach(this::logCacheStats);
 	}
 
 	/**
 	 * Retorna estatísticas de um cache específico.
 	 */
 	public String getCacheStats(String cacheName) {
-		Cache cache = cacheManager.getCache(cacheName);
-		if (cache != null) {
-			Object nativeCache = cache.getNativeCache();
-			if (nativeCache instanceof com.github.benmanes.caffeine.cache.Cache<?, ?> caffeineCache) {
-				CacheStats stats = caffeineCache.stats();
-				return String.format("Cache: %s, Hits: %d, Misses: %d, HitRate: %.2f%%, Size: %d",
-						cacheName,
-						stats.hitCount(),
-						stats.missCount(),
-						stats.hitRate() * 100,
-						caffeineCache.estimatedSize());
-			}
+		return findCache(cacheName)
+				.flatMap(this::extractCaffeineCache)
+				.map(caffeineCache -> formatCacheStats(cacheName, caffeineCache))
+				.orElse("Cache not found: " + cacheName);
+	}
+
+
+	private Optional<Cache> findCache(String cacheName) {
+		return Optional.ofNullable(cacheManager.getCache(cacheName));
+	}
+
+	private void logCacheStats(String cacheName) {
+		findCache(cacheName)
+				.flatMap(this::extractCaffeineCache)
+				.ifPresent(caffeineCache -> logCaffeineStats(cacheName, caffeineCache));
+	}
+
+	private Optional<com.github.benmanes.caffeine.cache.Cache<?, ?>> extractCaffeineCache(Cache cache) {
+		Object nativeCache = cache.getNativeCache();
+		
+		if (nativeCache instanceof com.github.benmanes.caffeine.cache.Cache<?, ?> caffeineCache) {
+			return Optional.of(caffeineCache);
 		}
-		return "Cache not found: " + cacheName;
+		
+		return Optional.empty();
+	}
+
+	private void logCaffeineStats(String cacheName, com.github.benmanes.caffeine.cache.Cache<?, ?> caffeineCache) {
+		CacheStats stats = caffeineCache.stats();
+		
+		log.info("Cache Stats [{}] - Hits: {}, Misses: {}, HitRate: {:.2f}%, Size: {}",
+				cacheName,
+				stats.hitCount(),
+				stats.missCount(),
+				stats.hitRate() * 100,
+				caffeineCache.estimatedSize());
+	}
+
+	private String formatCacheStats(String cacheName, com.github.benmanes.caffeine.cache.Cache<?, ?> caffeineCache) {
+		CacheStats stats = caffeineCache.stats();
+		
+		return String.format("Cache: %s, Hits: %d, Misses: %d, HitRate: %.2f%%, Size: %d",
+				cacheName,
+				stats.hitCount(),
+				stats.missCount(),
+				stats.hitRate() * 100,
+				caffeineCache.estimatedSize());
 	}
 }

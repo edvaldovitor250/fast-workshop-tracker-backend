@@ -22,7 +22,7 @@ public class CacheConfig {
 	public static final String PARTICIPACOES_CACHE = "participacoes";
 
 	@Bean
-	public CacheManager cacheManager() {
+	 CacheManager cacheManager() {
 		CaffeineCacheManager cacheManager = new CaffeineCacheManager(
 				WORKSHOPS_CACHE,
 				COLABORADORES_CACHE,
@@ -36,17 +36,17 @@ public class CacheConfig {
 
 	private Caffeine<Object, Object> caffeineCacheBuilder() {
 		return Caffeine.newBuilder()
-				.maximumSize(1000) // Máximo de 1000 entradas por cache
-				.expireAfterWrite(10, TimeUnit.MINUTES) // Expira após 10 minutos
-				.expireAfterAccess(5, TimeUnit.MINUTES) // Expira se não acessado por 5 minutos
-				.recordStats(); // Habilita estatísticas para monitoramento
+				.maximumSize(1000) 
+				.expireAfterWrite(10, TimeUnit.MINUTES) 
+				.expireAfterAccess(5, TimeUnit.MINUTES) 
+				.recordStats(); 
 	}
 
 	/**
 	 * Cache específico para workshops com TTL maior (dados mais estáveis).
 	 */
 	@Bean
-	public Caffeine<Object, Object> workshopsCaffeine() {
+	 Caffeine<Object, Object> workshopsCaffeine() {
 		return Caffeine.newBuilder()
 				.maximumSize(500)
 				.expireAfterWrite(30, TimeUnit.MINUTES)
@@ -57,7 +57,7 @@ public class CacheConfig {
 	 * Cache específico para colaboradores com TTL maior.
 	 */
 	@Bean
-	public Caffeine<Object, Object> colaboradoresCaffeine() {
+	 Caffeine<Object, Object> colaboradoresCaffeine() {
 		return Caffeine.newBuilder()
 				.maximumSize(500)
 				.expireAfterWrite(30, TimeUnit.MINUTES)

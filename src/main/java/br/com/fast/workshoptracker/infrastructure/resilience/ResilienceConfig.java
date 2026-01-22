@@ -25,7 +25,7 @@ public class ResilienceConfig {
 	 * Circuit Breaker para operações de banco de dados.
 	 */
 	@Bean
-	public CircuitBreaker databaseCircuitBreaker(CircuitBreakerRegistry registry) {
+	 CircuitBreaker databaseCircuitBreaker(CircuitBreakerRegistry registry) {
 		CircuitBreakerConfig config = CircuitBreakerConfig.custom()
 				.slidingWindowType(CircuitBreakerConfig.SlidingWindowType.COUNT_BASED)
 				.slidingWindowSize(10)
@@ -44,7 +44,7 @@ public class ResilienceConfig {
 	 * Retry para operações transientes.
 	 */
 	@Bean
-	public Retry databaseRetry(RetryRegistry registry) {
+	 Retry databaseRetry(RetryRegistry registry) {
 		RetryConfig config = RetryConfig.custom()
 				.maxAttempts(3)
 				.waitDuration(Duration.ofMillis(500))
@@ -61,10 +61,10 @@ public class ResilienceConfig {
 	 * Rate Limiter para APIs públicas.
 	 */
 	@Bean
-	public RateLimiter apiRateLimiter(RateLimiterRegistry registry) {
+	 RateLimiter apiRateLimiter(RateLimiterRegistry registry) {
 		RateLimiterConfig config = RateLimiterConfig.custom()
-				.limitForPeriod(100) // 100 requests
-				.limitRefreshPeriod(Duration.ofMinutes(1)) // por minuto
+				.limitForPeriod(100) 
+				.limitRefreshPeriod(Duration.ofMinutes(1)) 
 				.timeoutDuration(Duration.ofSeconds(5))
 				.build();
 
@@ -75,10 +75,10 @@ public class ResilienceConfig {
 	 * Circuit Breaker para operações externas (caso necessário no futuro).
 	 */
 	@Bean
-	public CircuitBreaker externalServiceCircuitBreaker(CircuitBreakerRegistry registry) {
+	 CircuitBreaker externalServiceCircuitBreaker(CircuitBreakerRegistry registry) {
 		CircuitBreakerConfig config = CircuitBreakerConfig.custom()
 				.slidingWindowType(CircuitBreakerConfig.SlidingWindowType.TIME_BASED)
-				.slidingWindowSize(60) // 60 segundos
+				.slidingWindowSize(60) 
 				.minimumNumberOfCalls(10)
 				.failureRateThreshold(60.0f)
 				.waitDurationInOpenState(Duration.ofMinutes(1))
@@ -93,12 +93,12 @@ public class ResilienceConfig {
 	 * Retry para operações externas com backoff exponencial.
 	 */
 	@Bean
-	public Retry externalServiceRetry(RetryRegistry registry) {
+	 Retry externalServiceRetry(RetryRegistry registry) {
 		RetryConfig config = RetryConfig.custom()
 				.maxAttempts(3)
 				.intervalFunction(IntervalFunction.ofExponentialBackoff(
-						Duration.ofSeconds(1), // initial interval
-						2.0 // multiplier
+						Duration.ofSeconds(1), 
+						2.0 
 				))
 				.build();
 
