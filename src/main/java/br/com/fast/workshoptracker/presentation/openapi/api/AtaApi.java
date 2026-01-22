@@ -159,7 +159,15 @@ public interface AtaApi {
 
 	@Operation(summary = AtaDocs.REMOVE_COLABORADOR_SUMMARY, description = AtaDocs.REMOVE_COLABORADOR_DESCRIPTION)
 	@ApiResponses({
-			@ApiResponse(responseCode = "204", description = "Removido"),
+			@ApiResponse(
+					responseCode = "200",
+					description = "OK",
+					content = @Content(
+							mediaType = "application/json",
+							schema = @Schema(implementation = AtaResponse.class),
+							examples = @ExampleObject(name = "ok", value = AtaDocs.REMOVE_COLABORADOR_200_RESPONSE)
+					)
+			),
 			@ApiResponse(
 					responseCode = "404",
 					description = "Ata/Colaborador nao encontrados ou colaborador nao esta na ata",
@@ -171,7 +179,7 @@ public interface AtaApi {
 			)
 	})
 	@DeleteMapping("/atas/{ataId}/colaboradores/{colaboradorId}")
-	ResponseEntity<Void> removeColaborador(
+	ResponseEntity<AtaResponse> removeColaborador(
 			@Parameter(description = "ID da ata", example = "1")
 			@PathVariable @AtaId Long ataId,
 			@Parameter(description = "ID do colaborador", example = "10")

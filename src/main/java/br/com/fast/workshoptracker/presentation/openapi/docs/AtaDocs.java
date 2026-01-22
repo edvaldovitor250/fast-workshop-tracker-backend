@@ -126,6 +126,21 @@ public final class AtaDocs {
 			</html>
 			""";
 
+	public static final String REMOVE_COLABORADOR_200_RESPONSE = """
+			{
+			  "id": 1,
+			  "workshop": {
+			    "id": 1,
+			    "nome": "Workshop Spring",
+			    "dataRealizacao": "20/01/2026",
+			    "descricao": "Conteudo do workshop..."
+			  },
+			  "colaboradores": [
+			    { "id": 2, "nome": "Bruno Souza" }
+			  ]
+			}
+			""";
+
 	public static final String LIST_SUMMARY = "Listar colaboradores e workshops que participaram";
 	public static final String LIST_DESCRIPTION = """
 			<html>

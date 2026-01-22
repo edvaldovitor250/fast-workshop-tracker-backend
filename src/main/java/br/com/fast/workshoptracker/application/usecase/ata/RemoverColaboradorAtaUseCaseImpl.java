@@ -1,6 +1,8 @@
 package br.com.fast.workshoptracker.application.usecase.ata;
 
 import br.com.fast.workshoptracker.application.dto.command.RemoverColaboradorAtaCommand;
+import br.com.fast.workshoptracker.application.dto.query.AtaDTO;
+import br.com.fast.workshoptracker.application.mapper.AtaApplicationMapper;
 import br.com.fast.workshoptracker.application.port.input.RemoverColaboradorAtaUseCase;
 import br.com.fast.workshoptracker.application.port.output.AtaRepositoryPort;
 import br.com.fast.workshoptracker.application.port.output.ColaboradorRepositoryPort;
@@ -19,10 +21,11 @@ public class RemoverColaboradorAtaUseCaseImpl implements RemoverColaboradorAtaUs
 
 	private final AtaRepositoryPort ataRepository;
 	private final ColaboradorRepositoryPort colaboradorRepository;
+	private final AtaApplicationMapper ataMapper;
 
 	@Override
 	@Transactional
-	public void execute(RemoverColaboradorAtaCommand command) {
+	public AtaDTO execute(RemoverColaboradorAtaCommand command) {
 		Ata ata = ataRepository.findById(command.ataId())
 				.orElseThrow(() -> Exceptions.notFound(
 						"Ata não encontrada: id=" + command.ataId(),
@@ -43,6 +46,7 @@ public class RemoverColaboradorAtaUseCaseImpl implements RemoverColaboradorAtaUs
 					ExceptionUtils.context("ataId", command.ataId(), "colaboradorId", command.colaboradorId())
 			);
 		}
+
+		return ataMapper.toDto(ata);
 	}
 }
-

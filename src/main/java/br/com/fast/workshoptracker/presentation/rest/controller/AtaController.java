@@ -59,9 +59,9 @@ public class AtaController implements AtaApi {
 
 	@Override
 	@PreAuthorize("hasAnyRole('CREATOR','ADMIN')")
-	public ResponseEntity<Void> removeColaborador(@PathVariable Long ataId, @PathVariable Long colaboradorId) {
-		removerColaboradorAtaUseCase.execute(new RemoverColaboradorAtaCommand(ataId, colaboradorId));
-		return ResponseEntity.noContent().build();
+	public ResponseEntity<AtaResponse> removeColaborador(@PathVariable Long ataId, @PathVariable Long colaboradorId) {
+		var dto = removerColaboradorAtaUseCase.execute(new RemoverColaboradorAtaCommand(ataId, colaboradorId));
+		return ResponseEntity.ok(ataMapper.toResponse(dto));
 	}
 
 	@Override

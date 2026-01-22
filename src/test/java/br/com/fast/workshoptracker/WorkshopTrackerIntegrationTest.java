@@ -57,7 +57,9 @@ class WorkshopTrackerIntegrationTest {
 
 		mockMvc.perform(delete("/api/atas/{ataId}/colaboradores/{colaboradorId}", ataId, colaborador1)
 						.header("Authorization", "Bearer " + token))
-				.andExpect(status().isNoContent());
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id").value(ataId))
+				.andExpect(jsonPath("$.colaboradores.length()").value(1));
 
 		mockMvc.perform(get("/api/atas")
 						.header("Authorization", "Bearer " + token))
