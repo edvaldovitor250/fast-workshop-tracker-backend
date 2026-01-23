@@ -6,10 +6,11 @@ import br.com.fast.workshoptracker.application.dto.query.ColaboradorParticipacoe
 import br.com.fast.workshoptracker.presentation.rest.dto.request.AtaCreateRequest;
 import br.com.fast.workshoptracker.presentation.rest.dto.response.AtaResponse;
 import br.com.fast.workshoptracker.presentation.rest.dto.response.ColaboradorParticipacoesResponse;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {WorkshopMapper.class, ColaboradorMapper.class})
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = {WorkshopMapper.class, ColaboradorMapper.class})
 public interface AtaMapper {
 
 	CriarAtaCommand toCommand(AtaCreateRequest request);

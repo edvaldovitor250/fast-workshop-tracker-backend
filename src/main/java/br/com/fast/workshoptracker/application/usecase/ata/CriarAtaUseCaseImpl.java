@@ -11,15 +11,15 @@ import br.com.fast.workshoptracker.application.mapper.AtaApplicationMapper;
 import br.com.fast.workshoptracker.application.port.input.CriarAtaUseCase;
 import br.com.fast.workshoptracker.application.port.output.AtaRepositoryPort;
 import br.com.fast.workshoptracker.application.port.output.ColaboradorRepositoryPort;
+import br.com.fast.workshoptracker.application.port.output.MetricsPort;
 import br.com.fast.workshoptracker.application.port.output.WorkshopRepositoryPort;
 import br.com.fast.workshoptracker.domain.entity.Ata;
 import br.com.fast.workshoptracker.domain.entity.Colaborador;
 import br.com.fast.workshoptracker.domain.entity.Workshop;
 import br.com.fast.workshoptracker.domain.exception.Exceptions;
 import br.com.fast.workshoptracker.domain.exception.util.ExceptionUtils;
-import br.com.fast.workshoptracker.infrastructure.observability.CustomMetrics;
-import br.com.fast.workshoptracker.infrastructure.util.CollectionValidator;
-import br.com.fast.workshoptracker.infrastructure.util.EntityFinder;
+import br.com.fast.workshoptracker.application.util.CollectionValidator;
+import br.com.fast.workshoptracker.application.util.EntityFinder;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -30,12 +30,12 @@ public class CriarAtaUseCaseImpl implements CriarAtaUseCase {
 	private final WorkshopRepositoryPort workshopRepository;
 	private final ColaboradorRepositoryPort colaboradorRepository;
 	private final AtaApplicationMapper ataMapper;
-	private final CustomMetrics customMetrics;
+	private final MetricsPort metrics;
 
 	@Override
 	@Transactional
 	public AtaDTO execute(CriarAtaCommand command) {
-		return customMetrics.timeBusinessOperation("criar-ata", () -> {
+		return metrics.timeBusinessOperation("criar-ata", () -> {
 			CollectionValidator.validateUniqueIds(command.colaboradoresIds(), "colaboradoresIds");
 
 			Workshop workshop = workshopRepository.findById(command.workshopId())
@@ -67,9 +67,8 @@ public class CriarAtaUseCaseImpl implements CriarAtaUseCase {
 			}
 
 			ata = ataRepository.save(ata);
-			customMetrics.incrementAtasCriadas();
+			metrics.incrementAtasCriadas();
 			return ataMapper.toDto(ata);
 		});
 	}
 }
-

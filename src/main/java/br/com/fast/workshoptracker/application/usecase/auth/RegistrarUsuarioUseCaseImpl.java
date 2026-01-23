@@ -9,7 +9,7 @@ import br.com.fast.workshoptracker.domain.entity.Usuario;
 import br.com.fast.workshoptracker.domain.enums.UserRole;
 import br.com.fast.workshoptracker.domain.exception.Exceptions;
 import br.com.fast.workshoptracker.domain.exception.util.ExceptionUtils;
-import br.com.fast.workshoptracker.infrastructure.util.StringNormalizer;
+import br.com.fast.workshoptracker.application.util.StringNormalizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,4 +44,3 @@ public class RegistrarUsuarioUseCaseImpl implements RegistrarUsuarioUseCase {
 		return new UsuarioDTO(usuario.getId(), usuario.getNome(), usuario.getEmail(), roles);
 	}
 }
-

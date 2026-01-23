@@ -58,18 +58,17 @@ public abstract class BaseExpeditiException extends RuntimeException {
 
 	private record SourceLocation(String sourceClass, String sourceMethod, int sourceLine) {
 		private static SourceLocation capture() {
-			StackTraceElement[] stack = new Throwable().getStackTrace();
-			for (StackTraceElement element : stack) {
-				String className = element.getClassName();
-				if (className == null) {
-					continue;
-				}
-				if (className.startsWith("br.com.fast.workshoptracker.domain.exception.")) {
-					continue;
-				}
-				return new SourceLocation(className, element.getMethodName(), element.getLineNumber());
-			}
-			return new SourceLocation(null, null, -1);
+			return StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
+					.walk(frames -> frames
+							.filter(frame -> {
+								String className = frame.getClassName();
+								return className != null
+										&& !className.startsWith("br.com.fast.workshoptracker.domain.exception.");
+							})
+							.findFirst()
+							.map(frame -> new SourceLocation(frame.getClassName(), frame.getMethodName(), frame.getLineNumber()))
+							.orElse(new SourceLocation(null, null, -1))
+					);
 		}
 	}
 }

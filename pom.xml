@@ -24,6 +24,7 @@
 		<lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
 		<testcontainers.version>1.19.7</testcontainers.version>
 		<micrometer-tracing.version>1.2.3</micrometer-tracing.version>
+		<archunit.version>1.3.0</archunit.version>
 	</properties>
 
 	<dependencies>
@@ -137,6 +138,13 @@
 		<dependency>
 			<groupId>org.awaitility</groupId>
 			<artifactId>awaitility</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- Architecture Tests -->
+		<dependency>
+			<groupId>com.tngtech.archunit</groupId>
+			<artifactId>archunit-junit5</artifactId>
+			<version>1.4.1</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

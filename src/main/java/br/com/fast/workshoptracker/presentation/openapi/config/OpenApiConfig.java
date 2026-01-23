@@ -1,4 +1,4 @@
-package br.com.fast.workshoptracker.infrastructure.config;
+package br.com.fast.workshoptracker.presentation.openapi.config;
 
 import org.springframework.context.annotation.Configuration;
 

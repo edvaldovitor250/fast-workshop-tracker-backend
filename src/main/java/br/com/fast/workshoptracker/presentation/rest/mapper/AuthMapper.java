@@ -8,9 +8,10 @@ import br.com.fast.workshoptracker.presentation.rest.dto.request.AuthLoginReques
 import br.com.fast.workshoptracker.presentation.rest.dto.request.AuthRegisterRequest;
 import br.com.fast.workshoptracker.presentation.rest.dto.response.AuthTokenResponse;
 import br.com.fast.workshoptracker.presentation.rest.dto.response.UsuarioResponse;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface AuthMapper {
 
 	RegistrarUsuarioCommand toCommand(AuthRegisterRequest request);

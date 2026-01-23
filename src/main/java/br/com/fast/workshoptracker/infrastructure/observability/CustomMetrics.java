@@ -1,5 +1,6 @@
 package br.com.fast.workshoptracker.infrastructure.observability;
 
+import br.com.fast.workshoptracker.application.port.output.MetricsPort;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
@@ -13,13 +14,14 @@ import java.util.function.Supplier;
  */
 @Component
 @RequiredArgsConstructor
-public class CustomMetrics {
+public class CustomMetrics implements MetricsPort {
 
 	private final MeterRegistry meterRegistry;
 
 	/**
 	 * Incrementa contador de atas criadas.
 	 */
+	@Override
 	public void incrementAtasCriadas() {
 		Counter.builder("atas.criadas.total")
 				.description("Total de atas criadas no sistema")
@@ -122,6 +124,7 @@ public class CustomMetrics {
 	/**
 	 * Registra duração de operações de negócio.
 	 */
+	@Override
 	public <T> T timeBusinessOperation(String operationName, Supplier<T> supplier) {
 		Timer timer = Timer.builder("business.operation.duration")
 				.description("Tempo de execução de operações de negócio")

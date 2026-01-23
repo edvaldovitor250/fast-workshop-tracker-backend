@@ -4,9 +4,10 @@ import br.com.fast.workshoptracker.application.dto.command.CriarColaboradorComma
 import br.com.fast.workshoptracker.application.dto.query.ColaboradorDTO;
 import br.com.fast.workshoptracker.presentation.rest.dto.request.ColaboradorCreateRequest;
 import br.com.fast.workshoptracker.presentation.rest.dto.response.ColaboradorResponse;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface ColaboradorMapper {
 
 	CriarColaboradorCommand toCommand(ColaboradorCreateRequest request);

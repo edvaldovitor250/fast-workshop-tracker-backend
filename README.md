@@ -592,6 +592,11 @@ histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket[5m])) by (
       <p>
         A suíte combina testes unitários, integração (Testcontainers) e cenários específicos (performance/segurança).
       </p>
+      <p>
+        <strong>Testes de arquitetura (ArchUnit)</strong>: valida regras de codificação e a arquitetura em camadas
+        (domain/application/presentation/infrastructure). Veja: <code>CodingRulesArchTest</code> e
+        <code>HexagonalArchitectureArchTest</code>.
+      </p>
 
       <pre><code class="language-bash"># Todos os testes
 ./mvnw clean test

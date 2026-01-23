@@ -11,11 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.fast.workshoptracker.presentation.rest.dto.request.AtaAddColaboradorRequest;
-import br.com.fast.workshoptracker.presentation.rest.dto.request.AtaCreateRequest;
-import br.com.fast.workshoptracker.presentation.rest.dto.response.AtaResponse;
-import br.com.fast.workshoptracker.presentation.rest.dto.response.ColaboradorParticipacoesResponse;
-import br.com.fast.workshoptracker.presentation.openapi.api.AtaApi;
 import br.com.fast.workshoptracker.application.dto.command.AdicionarColaboradorAtaCommand;
 import br.com.fast.workshoptracker.application.dto.command.RemoverColaboradorAtaCommand;
 import br.com.fast.workshoptracker.application.dto.query.ListarParticipacoesQuery;
@@ -23,6 +18,11 @@ import br.com.fast.workshoptracker.application.port.input.AdicionarColaboradorAt
 import br.com.fast.workshoptracker.application.port.input.CriarAtaUseCase;
 import br.com.fast.workshoptracker.application.port.input.ListarParticipacoesUseCase;
 import br.com.fast.workshoptracker.application.port.input.RemoverColaboradorAtaUseCase;
+import br.com.fast.workshoptracker.presentation.openapi.api.AtaApi;
+import br.com.fast.workshoptracker.presentation.rest.dto.request.AtaAddColaboradorRequest;
+import br.com.fast.workshoptracker.presentation.rest.dto.request.AtaCreateRequest;
+import br.com.fast.workshoptracker.presentation.rest.dto.response.AtaResponse;
+import br.com.fast.workshoptracker.presentation.rest.dto.response.ColaboradorParticipacoesResponse;
 import br.com.fast.workshoptracker.presentation.rest.mapper.AtaMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

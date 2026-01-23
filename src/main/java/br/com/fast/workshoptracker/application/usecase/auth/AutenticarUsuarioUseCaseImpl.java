@@ -8,7 +8,7 @@ import br.com.fast.workshoptracker.application.port.output.TokenGeneratorPort;
 import br.com.fast.workshoptracker.application.port.output.UsuarioRepositoryPort;
 import br.com.fast.workshoptracker.domain.entity.Usuario;
 import br.com.fast.workshoptracker.domain.exception.Exceptions;
-import br.com.fast.workshoptracker.infrastructure.util.StringNormalizer;
+import br.com.fast.workshoptracker.application.util.StringNormalizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,4 +38,3 @@ public class AutenticarUsuarioUseCaseImpl implements AutenticarUsuarioUseCase {
 		return tokenGenerator.generate(usuario.getEmail(), roles);
 	}
 }
-

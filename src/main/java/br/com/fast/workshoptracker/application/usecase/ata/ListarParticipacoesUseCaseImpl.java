@@ -6,7 +6,7 @@ import br.com.fast.workshoptracker.application.dto.query.ListarParticipacoesQuer
 import br.com.fast.workshoptracker.application.dto.query.WorkshopDTO;
 import br.com.fast.workshoptracker.application.port.input.ListarParticipacoesUseCase;
 import br.com.fast.workshoptracker.application.port.output.AtaRepositoryPort;
-import br.com.fast.workshoptracker.infrastructure.util.StringNormalizer;
+import br.com.fast.workshoptracker.application.util.StringNormalizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

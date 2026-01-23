@@ -14,14 +14,19 @@ import javax.sql.DataSource;
 @Configuration
 public class DatabaseConfig {
 
-	@Value("${spring.datasource.url}")
-	private String jdbcUrl;
+	private final String jdbcUrl;
+	private final String username;
+	private final String password;
 
-	@Value("${spring.datasource.username}")
-	private String username;
-
-	@Value("${spring.datasource.password}")
-	private String password;
+	public DatabaseConfig(
+			@Value("${spring.datasource.url}") String jdbcUrl,
+			@Value("${spring.datasource.username}") String username,
+			@Value("${spring.datasource.password}") String password
+	) {
+		this.jdbcUrl = jdbcUrl;
+		this.username = username;
+		this.password = password;
+	}
 
 	@Bean
 	public DataSource dataSource() {

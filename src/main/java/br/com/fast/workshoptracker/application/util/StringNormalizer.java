@@ -1,4 +1,4 @@
-package br.com.fast.workshoptracker.infrastructure.util;
+package br.com.fast.workshoptracker.application.util;
 
 import java.util.Locale;
 
