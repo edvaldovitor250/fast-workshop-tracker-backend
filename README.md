@@ -1,585 +1,310 @@
-<body>
-  <header>
-    <h1 align="center">📘 Workshop Tracker – API REST (Java 21 + Spring Boot 3.2 + MySQL)</h1>
-    <p align="center">
-      <img src="https://img.shields.io/badge/spring--boot-3.2.12-6DB33F" alt="Spring Boot 3.2.12"/>
-      <img src="https://img.shields.io/badge/java-21-orange" alt="Java 21"/>
-      <img src="https://img.shields.io/badge/db-MySQL%208.0-blue" alt="MySQL 8"/>
-      <img src="https://img.shields.io/badge/migrations-Flyway-red" alt="Flyway"/>
-      <img src="https://img.shields.io/badge/security-JWT%20Bearer-black" alt="JWT Bearer"/>
-      <img src="https://img.shields.io/badge/docs-Swagger%20UI-85EA2D" alt="Swagger UI"/>
-      <img src="https://img.shields.io/badge/metrics-Prometheus-orange" alt="Prometheus"/>
-      <img src="https://img.shields.io/badge/tracing-Zipkin-blueviolet" alt="Zipkin"/>
-      <img src="https://img.shields.io/badge/mapping-MapStruct-lightgrey" alt="MapStruct"/>
-      <img src="https://img.shields.io/badge/build-Maven-CC0000" alt="Maven"/>
+<header>
+  <h1 align="center">📊 Workshop Tracker – Frontend (Angular 21 + Bootstrap 5.3)</h1>
+  <p align="center">
+    <img src="https://img.shields.io/badge/angular-21.1-red" alt="Angular 21.1"/>
+    <img src="https://img.shields.io/badge/bootstrap-5.3.8-7952B3" alt="Bootstrap 5.3.8"/>
+    <img src="https://img.shields.io/badge/ng--bootstrap-20.0.0-563D7C" alt="ng-bootstrap 20.0.0"/>
+    <img src="https://img.shields.io/badge/chart.js-4.5.1-FF6384" alt="Chart.js 4.5.1"/>
+    <img src="https://img.shields.io/badge/rxjs-7.8-B7178C" alt="RxJS 7.8"/>
+    <img src="https://img.shields.io/badge/typescript-5.9-3178C6" alt="TypeScript 5.9"/>
+    <img src="https://img.shields.io/badge/standalone-components-blue" alt="Standalone Components"/>
+    <img src="https://img.shields.io/badge/tests-vitest-6E9F18" alt="Vitest"/>
+    <img src="https://img.shields.io/badge/icons-bootstrap--icons-111827" alt="Bootstrap Icons"/>
+    <img src="https://img.shields.io/badge/ui-kit-shared%2Fui-0EA5E9" alt="UI Kit"/>
+    <img src="https://img.shields.io/badge/build-npm-CC0000" alt="npm build"/>
+  </p>
+
+  <p align="center">
+    Desafio <strong>FAST – Soluções Tecnológicas</strong> (Frontend): UI para acompanhar workshops, colaboradores e atas
+    (presenças), com filtros, tabelas e analytics.
+    <br />
+    Este README concentra <strong>toda</strong> a documentação do projeto (arquitetura, UI Kit/contratos, execução e padrões).
+  </p>
+</header>
+
+<main>
+  <h2>🧭 Índice</h2>
+  <ol>
+    <li><a href="#visao-geral">Visão Geral</a></li>
+    <li><a href="#rotas">Rotas</a></li>
+    <li><a href="#arquitetura">Arquitetura &amp; Pastas</a></li>
+    <li><a href="#tech-stack">Tech Stack &amp; Dependências</a></li>
+    <li><a href="#ui-kit">UI Kit (Contrato)</a></li>
+    <li><a href="#estilos">Estilos (Tokens, Layout e Componentes)</a></li>
+    <li><a href="#formatos">Formatos (Datas e Filtros)</a></li>
+    <li><a href="#padroes-codigo">Padrões de Código</a></li>
+    <li><a href="#dados">Dados &amp; Integração</a></li>
+    <li><a href="#como-rodar">Como Rodar</a></li>
+    <li><a href="#testes">Testes</a></li>
+    <li><a href="#contratos">Contratos (anti-despadronização)</a></li>
+    <li><a href="#autor">Autor</a></li>
+  </ol>
+
+  <section id="visao-geral">
+    <h2>ℹ️ Visão Geral</h2>
+    <p>
+      O <strong>Workshop Tracker (Frontend)</strong> é uma aplicação Angular (standalone) com Bootstrap 5.3
+      que padroniza toda a UI via <strong>shared/ui</strong>: cabeçalho de página, barra de filtros, tabela base e estados
+      (loading/empty/error). O objetivo é garantir consistência de layout, espaçamento, botões e componentes reutilizáveis.
     </p>
-    <p align="center">
-      Desafio <strong>FAST – Soluções Tecnológicas</strong> (Etapa Backend): API REST para cadastrar workshops,
-      colaboradores e processar atas de presença, com listagem de participações e filtros.
-      <br/>
-      Este README concentra <strong>toda</strong> a documentação do projeto (arquitetura, modelagem, contratos, execução e padrões).
+    <h3>📌 Domínio (modelos TS puros)</h3>
+    <ul>
+      <li><strong>Colaborador</strong>: <code>id</code>, <code>nome</code> (<code>src/app/shared/domain/colaborador.model.ts</code>)</li>
+      <li><strong>Workshop</strong>: <code>id</code>, <code>nome</code>, <code>dataRealizacao</code>, <code>descricao</code> (<code>src/app/shared/domain/workshop.model.ts</code>)</li>
+      <li><strong>Ata</strong>: <code>id</code>, <code>workshop</code>, <code>colaboradores</code> (<code>src/app/shared/domain/ata.model.ts</code>)</li>
+    </ul>
+  </section>
+
+  <section id="rotas">
+    <h2>🧩 Rotas</h2>
+    <ul>
+      <li><code>/dashboard</code> — visão geral + cards + filtro + tabela (atas)</li>
+      <li><code>/analytics</code> — gráficos (ng2-charts/Chart.js) + ranking em tabela</li>
+      <li><code>/atas</code> — listagem paginada (filtros + tabela padrão)</li>
+      <li><code>/workshops/:id</code> — detalhe do workshop + participantes</li>
+    </ul>
+    <details>
+      <summary><b>Onde ficam as rotas</b></summary>
+      <p><code>src/app/app.routes.ts</code> usa <code>loadComponent</code> (lazy) para cada page.</p>
+    </details>
+  </section>
+
+  <section id="arquitetura">
+    <h2>🏗️ Arquitetura &amp; Pastas</h2>
+    <p>
+      A arquitetura é <strong>core / shared / features</strong>, com fronteiras explícitas para escalar o código e evitar
+      dependências cruzadas entre features.
     </p>
-  </header>
-
-  <main>
-    <h2>🧭 Índice</h2>
-    <ol>
-      <li><a href="#visao-geral">Visão Geral</a></li>
-      <li><a href="#requisitos">Requisitos do Desafio</a></li>
-      <li><a href="#arquitetura-e-pacotes">Arquitetura &amp; Pacotes</a></li>
-      <li><a href="#modelo-de-dados">Modelo de Dados (ER)</a></li>
-      <li><a href="#tech-stack">Tech Stack &amp; Dependências</a></li>
-      <li><a href="#como-rodar">Como Rodar (Docker &amp; Local)</a></li>
-      <li><a href="#seguranca">Segurança (JWT / Roles)</a></li>
-      <li><a href="#endpoints">Endpoints (Swagger / Exemplos)</a></li>
-      <li><a href="#formatos">Formatos (Datas, Ordenação e Filtros)</a></li>
-      <li><a href="#tratamento-erros">Tratamento de Erros</a></li>
-      <li><a href="#observabilidade">Observabilidade (Actuator / Prometheus / Zipkin)</a></li>
-      <li><a href="#testes">Testes</a></li>
-      <li><a href="#boas-praticas">Boas Práticas &amp; Padrões</a></li>
-      <li><a href="#licenca-autor">Licença &amp; Autor</a></li>
-    </ol>
-    <section id="visao-geral">
-      <h2>ℹ️ Visão Geral</h2>
-      <p>
-        O <strong>Workshop Tracker</strong> é uma API REST para rastrear a participação de colaboradores em workshops por meio de
-        <strong>atas de presença</strong>. O domínio foi modelado para manter consistência e evitar duplicidades, garantindo
-        consultas eficientes e contratos bem documentados via Swagger.
-      </p>
-      <h3>📌 Definições (domínio)</h3>
-      <ul>
-        <li><strong>Colaborador</strong>: <code>id</code>, <code>nome</code></li>
-        <li><strong>Workshop</strong>: <code>id</code>, <code>nome</code>, <code>dataRealizacao</code>, <code>descricao</code></li>
-        <li><strong>Ata</strong>: <code>id</code>, <code>workshop</code>, <code>colaboradores</code> (presenças)</li>
-      </ul>
-      <h3>✅ Regras do domínio implementadas</h3>
-      <ul>
-        <li><strong>1 ata por workshop</strong>: constraint única <code>uk_ata_workshop</code> em <code>ata.workshop_id</code>.</li>
-        <li>Uma <strong>Ata</strong> pertence a um <strong>Workshop</strong> e contém vários <strong>Colaboradores</strong>.</li>
-        <li>Sem duplicidade de colaborador na mesma ata: chave composta <code>(ata_id, colaborador_id)</code> em <code>ata_colaborador</code>.</li>
-        <li>Remover colaborador que <strong>não está</strong> na ata retorna <strong>404</strong>.</li>
-      </ul>
-    </section>
-    <section id="requisitos">
-      <h2>📋 Requisitos do Desafio (FAST)</h2>
-      <p>
-        <strong>Desafio 1a – Etapa Backend</strong>: construir uma API REST em Java para listar detalhes de workshops e presença de colaboradores.
-      </p>
-      <h3>Processamento de Atas</h3>
-      <ul>
-        <li><code>POST /api/workshops</code> — cadastrar Workshop</li>
-        <li><code>POST /api/colaboradores</code> — cadastrar Colaborador</li>
-        <li><code>POST /api/atas</code> — criar ata de presença para um Workshop</li>
-        <li><code>PUT /api/workshops/&lt;workshopId&gt;/atas/&lt;ataId&gt;</code> — adicionar colaborador em uma Ata</li>
-        <li><code>DELETE /api/atas/&lt;ataId&gt;/colaboradores/&lt;colaboradorId&gt;</code> — remover colaborador de uma Ata</li>
-      </ul>
-      <h3>Identificação de Colaboradores Presentes</h3>
-      <ul>
-        <li><code>GET /api/atas</code> — lista colaboradores em ordem alfabética e workshops que participaram</li>
-        <li><code>GET /api/atas?workshopNome=&lt;nome&gt;</code> — filtra por nome do workshop</li>
-        <li><code>GET /api/atas?data=&lt;data&gt;</code> — filtra por data de realização do workshop</li>
-      </ul>
-      <h3>Bônus (opcional) — implementado</h3>
-      <ul>
-        <li><strong>Persistência</strong>: MySQL + Flyway (migrações versionadas)</li>
-        <li><strong>Autenticação/Autorização</strong>: JWT Bearer + roles</li>
-        <li><strong>Documentação</strong>: Swagger UI (springdoc-openapi)</li>
-        <li><strong>Observabilidade</strong>: Actuator + Prometheus + Tracing Zipkin</li>
-      </ul>
-    </section>
-    <section id="arquitetura-e-pacotes">
-      <h2>🏗️ Arquitetura &amp; Pacotes</h2>
-      <p>
-        A solução segue <strong>arquitetura em camadas</strong> com inspiração em <strong>Ports &amp; Adapters</strong> (hexagonal):
-        a camada de <em>aplicação</em> define portas (interfaces), e a infraestrutura fornece adaptações concretas
-        (persistência, segurança, etc.).
-      </p>
-      <pre><code>📦src/main/java/br/com/fast/workshoptracker
- ┣ 📂presentation
- ┃ ┣ 📂rest
- ┃ ┃ ┣ 📂controller   (AtaController, WorkshopController, ColaboradorController, AuthController)
- ┃ ┃ ┣ 📂dto          (request/response)
- ┃ ┃ ┣ 📂mapper       (mappers REST ↔ application, MapStruct)
- ┃ ┃ ┣ 📂validation   (Bean Validation com anotações customizadas)
- ┃ ┃ ┗ 📂error        (ApiExceptionHandler + ErrorResponse)
- ┃ ┗ 📂openapi
- ┃   ┣ 📂api          (interfaces @RequestMapping + anotações OpenAPI)
- ┃   ┗ 📂docs         (strings HTML com descrições e exemplos)
- ┣ 📂application
- ┃ ┣ 📂dto            (command/query)
- ┃ ┣ 📂port
- ┃ ┃ ┣ 📂input        (use cases)
- ┃ ┃ ┗ 📂output       (ports para repositórios e serviços)
- ┃ ┣ 📂usecase        (implementações dos casos de uso)
- ┃ ┗ 📂mapper         (mappers application ↔ domain, MapStruct)
- ┣ 📂domain
- ┃ ┣ 📂entity         (Ata, Workshop, Colaborador, Usuario)
- ┃ ┣ 📂enums          (UserRole)
- ┃ ┗ 📂exception      (errors padronizados por categoria/gravidade)
- ┗ 📂infrastructure
-   ┣ 📂config         (WebMvcConfig, OpenApiConfig, JwtProperties)
-   ┣ 📂persistence    (Spring Data JPA, adapters, projections)
-   ┣ 📂security       (Spring Security + Resource Server JWT)
-   ┣ 📂observability  (Actuator health custom + métricas custom)
-   ┗ 📂util           (normalização, validações, formatters)
+    <h3>📦 Estrutura (alto nível)</h3>
+    <pre><code>src/app
+ ┣ core/                # cross-cutting (layout shell, http, auth, data-access app-wide)
+ ┣ shared/              # contrato obrigatório (domain TS-only, styles, ui, pipes)
+ ┗ features/            # módulos por domínio (analytics, dashboard, atas, workshops...)
 </code></pre>
-      <h3>Fluxos principais</h3>
-      <ul>
-        <li><strong>POST /api/atas</strong> valida unicidade e existência de entidades e cria a ata (1 por workshop).</li>
-        <li><strong>GET /api/atas</strong> usa uma query otimizada que retorna linhas (colaborador x workshop) e agrega em memória por colaborador.</li>
-      </ul>
-    </section>
-    <section id="modelo-de-dados">
-      <h2>🗄️ Modelo de Dados (ER)</h2>
-      <p>
-        A persistência é relacional (MySQL). O schema é criado/validado via <strong>Flyway</strong> com migrações versionadas.
-      </p>
-      <h3>Entidades e relacionamentos</h3>
-      <ul>
-        <li><strong>workshop</strong> (1) — (1) <strong>ata</strong> (por constraint única)</li>
-        <li><strong>ata</strong> (N) — (N) <strong>colaborador</strong> via tabela de junção <strong>ata_colaborador</strong></li>
-        <li><strong>usuario</strong> (1) — (N) <strong>usuario_role</strong> (roles)</li>
-      </ul>
-      <details>
-        <summary><b>Diagrama ER (Mermaid)</b></summary>
-        <pre><code class="language-mermaid">erDiagram
-  WORKSHOP ||--|| ATA : "1 workshop → 1 ata"
-  ATA ||--o{ ATA_COLABORADOR : "presencas"
-  COLABORADOR ||--o{ ATA_COLABORADOR : "presencas"
-
-  USUARIO ||--o{ USUARIO_ROLE : "roles"
-
-  WORKSHOP {
-    BIGINT id PK
-    VARCHAR nome
-    DATE data_realizacao
-    VARCHAR descricao
-  }
-
-  ATA {
-    BIGINT id PK
-    BIGINT workshop_id UK,FK
-  }
-
-  COLABORADOR {
-    BIGINT id PK
-    VARCHAR nome
-  }
-
-  ATA_COLABORADOR {
-    BIGINT ata_id PK,FK
-    BIGINT colaborador_id PK,FK
-  }
-
-  USUARIO {
-    BIGINT id PK
-    VARCHAR nome
-    VARCHAR email UK
-    VARCHAR senha_hash
-  }
-
-  USUARIO_ROLE {
-    BIGINT usuario_id PK,FK
-    VARCHAR role PK
-  }
+    <h3>✅ Regras de dependência (não negociáveis)</h3>
+    <ul>
+      <li><code>core</code> pode depender de <code>shared</code></li>
+      <li><code>features</code> podem depender de <code>core</code> e <code>shared</code></li>
+      <li><code>shared</code> <strong>não</strong> pode depender de <code>features</code></li>
+      <li><code>features/*/domain</code> é TypeScript puro (sem Angular)</li>
+    </ul>
+    <details>
+      <summary><b>Diagrama (dependências)</b></summary>
+      <pre><code class="language-mermaid">flowchart LR
+  shared[shared] --> core[core]
+  shared --> features[features/*]
+  core --> features
+  features -. não importa .-> features
 </code></pre>
-      </details>
-      <details>
-        <summary><b>SQL (Flyway)</b></summary>
-        <p>Migração inicial do domínio (workshops/atas/colaboradores):</p>
-        <pre><code class="language-sql">CREATE TABLE colaborador (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(120) NOT NULL
-);
+    </details>
+    <details>
+      <summary><b>Estrutura detalhada (resumo real do projeto)</b></summary>
+      <pre><code>src/app
+  app.routes.ts           # rotas lazy (loadComponent)
+  app.config.ts           # providers (standalone)
 
-CREATE TABLE workshop (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(150) NOT NULL,
-    data_realizacao DATE NOT NULL,
-    descricao VARCHAR(500)
-);
+  core/
+    layout/               # shell + header + sidebar + footer
+    http/interceptors/    # interceptors (auth, etc.)
+    data-access/          # services app-wide (hoje: mocks)
+    utils/                # helpers (ex.: formatação de datas)
 
-CREATE TABLE ata (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    workshop_id BIGINT NOT NULL,
-    CONSTRAINT fk_ata_workshop FOREIGN KEY (workshop_id) REFERENCES workshop (id),
-    CONSTRAINT uk_ata_workshop UNIQUE (workshop_id)
-);
+  shared/
+    domain/               # modelos TS puros (cross-feature)
+    styles/               # tokens/layout/componentes globais
+    ui/                   # UI Kit (contrato obrigatório)
+    pipes/                # pipes compartilhados
 
-CREATE TABLE ata_colaborador (
-    ata_id BIGINT NOT NULL,
-    colaborador_id BIGINT NOT NULL,
-    PRIMARY KEY (ata_id, colaborador_id),
-    CONSTRAINT fk_ata_colaborador_ata FOREIGN KEY (ata_id) REFERENCES ata (id) ON DELETE CASCADE,
-    CONSTRAINT fk_ata_colaborador_colaborador FOREIGN KEY (colaborador_id) REFERENCES colaborador (id)
-);
+  features/
+    dashboard/            # pages/ui específicos
+    analytics/            # charts + ranking
+    atas/                 # lista paginada
+    workshops/            # detalhe do workshop
 </code></pre>
-        <p>Migração de autenticação/usuários:</p>
-        <pre><code class="language-sql">CREATE TABLE usuario (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(120) NOT NULL,
-    email VARCHAR(180) NOT NULL,
-    senha_hash VARCHAR(255) NOT NULL,
-    CONSTRAINT uk_usuario_email UNIQUE (email)
-);
+    </details>
+  </section>
 
-CREATE TABLE usuario_role (
-    usuario_id BIGINT NOT NULL,
-    role VARCHAR(30) NOT NULL,
-    PRIMARY KEY (usuario_id, role),
-    CONSTRAINT fk_usuario_role_usuario FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE CASCADE
-);
-</code></pre>
-      </details>
-    </section>
-    <section id="tech-stack">
-      <h2>🛠️ Tech Stack &amp; Dependências</h2>
+  <section id="tech-stack">
+    <h2>🛠️ Tech Stack &amp; Dependências</h2>
+    <ul>
+      <li><strong>Angular 21</strong> (standalone + lazy routes via <code>loadComponent</code>)</li>
+      <li><strong>Bootstrap 5.3</strong> + <strong>Bootstrap Icons</strong></li>
+      <li><strong>ng-bootstrap</strong> (ex.: dropdown/pagination)</li>
+      <li><strong>Chart.js</strong> + <strong>ng2-charts</strong> (analytics)</li>
+      <li><strong>RxJS 7.8</strong> (viewmodels reativos com <code>vm$</code>)</li>
+      <li><strong>Vitest</strong> (via <code>ng test</code>)</li>
+    </ul>
+    <details>
+      <summary><b>Onde ficam as versões</b></summary>
+      <p><code>package.json</code> concentra as dependências e versões.</p>
+    </details>
+  </section>
+
+  <section id="ui-kit">
+    <h2>🧰 UI Kit (Contrato)</h2>
+    <p>
+      O UI Kit fica em <code>src/app/shared/ui</code> e é o <strong>único caminho</strong> para padronizar botões, filtros,
+      tabelas, estados e header de página.
+    </p>
+    <h3>📄 Wrapper padrão (.page)</h3>
+    <ul>
+      <li>Todas as telas herdam alinhamento/recuo via wrapper <code>.page</code> no shell (<code>src/app/core/layout/shell/shell.component.html</code>).</li>
+      <li>O CSS do wrapper é global e vive em <code>src/app/shared/styles/_layout.scss</code>.</li>
+    </ul>
+    <h3>🧱 Componentes obrigatórios</h3>
+    <ul>
+      <li><code>app-page-header</code> — título/ícone/badge + slot de ações</li>
+      <li><code>app-filters-bar</code> — barra de filtros padrão (colaborador/workshop/data)</li>
+      <li><code>app-data-table</code> — “card” padrão de tabela + header + scroll</li>
+      <li><code>app-ata-table</code> — tabela padrão de atas (um único componente para o app)</li>
+      <li><code>app-loading-state</code>, <code>app-empty-state</code>, <code>app-error-state</code> — estados padrão</li>
+    </ul>
+    <details>
+      <summary><b>Exemplos rápidos (uso recomendado)</b></summary>
+      <pre><code class="language-html">&lt;app-page-header icon="bi-speedometer2" title="Dashboard" subtitle="..." /&gt;
+
+&lt;app-filters-bar
+  [resultsCount]="vm.total"
+  [colaboradorControl]="colaboradorControl"
+  [workshopControl]="workshopControl"
+  [dataControl]="dataControl"
+  (apply)="onApplyFiltersClick()"
+  (clear)="clearFilters()"
+/&gt;
+
+&lt;app-data-table icon="bi-table" title="Registros"&gt;
+  &lt;table class="app-data-table__table"&gt;...&lt;/table&gt;
+&lt;/app-data-table&gt;</code></pre>
+    </details>
+    <details>
+      <summary><b>Tabela padrão de Atas (unificada)</b></summary>
       <ul>
-        <li><strong>Java 21</strong> + <strong>Spring Boot 3.2.12</strong></li>
-        <li><strong>Spring Web</strong>, <strong>Spring Data JPA</strong> (Hibernate), <strong>Bean Validation</strong></li>
-        <li><strong>MySQL 8</strong> + <strong>Flyway</strong> (migrações e <code>ddl-auto=validate</code>)</li>
-        <li><strong>Spring Security</strong> + <strong>OAuth2 Resource Server</strong> (JWT HS256)</li>
-        <li><strong>OpenAPI/Swagger UI</strong> (springdoc)</li>
-        <li><strong>MapStruct</strong> + Lombok (mapeamento e redução de boilerplate)</li>
-        <li><strong>Actuator</strong> + Micrometer (Prometheus) + Tracing (Brave/Zipkin)</li>
-        <li><strong>Testes</strong>: JUnit 5 + Mockito + Testcontainers + Awaitility</li>
+        <li>Componente: <code>src/app/shared/ui/ata-table/ata-table.component.ts</code></li>
+        <li>Entrada: <code>rows: AtaTableRow[]</code></li>
+        <li>Saída: <code>(openDetails)</code> com <code>workshopId</code></li>
       </ul>
-      <details>
-        <summary><b>Observação sobre cache/resiliência</b></summary>
-        <p>
-          Apesar de existirem arquivos auxiliares no repositório mencionando cache/resiliência, o build atual não inclui
-          dependências de Caffeine ou Resilience4j. Esta documentação reflete o código realmente ativo.
-        </p>
-      </details>
-    </section>
-    <section id="como-rodar">
-      <h2>🚀 Como Rodar (Docker &amp; Local)</h2>
-      <h3>Pré-requisitos</h3>
-      <ul>
-        <li>Java 21</li>
-        <li>(Opcional) Docker + Docker Compose</li>
-      </ul>
-      <h3>Opção A) MySQL via Docker (recomendado)</h3>
-      <pre><code class="language-bash"># subir apenas o banco
-docker compose -f compose.yaml up -d
+    </details>
+  </section>
 
-# executar a API
-./mvnw spring-boot:run
-</code></pre>
-      <h3>Opção B) Stack de monitoramento (MySQL + Prometheus + Grafana + Zipkin)</h3>
-      <pre><code class="language-bash">docker compose -f docker-compose-monitoring.yaml up -d
-
-# depois rode a aplicação na sua máquina (host)
-./mvnw spring-boot:run
-</code></pre>
-      <p>
-        Observação: o Prometheus está configurado para coletar métricas em <code>host.docker.internal:8080</code>.
-      </p>
-      <h3>Opção C) Sem MySQL (H2 em memória)</h3>
-      <p>
-        O profile <code>local</code> usa H2 em memória (modo MySQL) + Flyway.
-      </p>
-      <pre><code class="language-bash"># PowerShell
-./mvnw spring-boot:run "-Dspring-boot.run.profiles=local"
-
-# Bash/Zsh
-./mvnw spring-boot:run -Dspring-boot.run.profiles=local
-</code></pre>
-      <h3>Variáveis de ambiente (principais)</h3>
+  <section id="estilos">
+    <h2>🎨 Estilos (Tokens, Layout e Componentes)</h2>
+    <p>
+      Padrões globais (tokens/layout/componentes) são centralizados em <code>src/app/shared/styles</code> e importados em
+      <code>src/styles.scss</code>. É proibido manter “estilos globais disfarçados” em pastas de pages.
+    </p>
+    <ul>
+      <li><strong>Tokens</strong>: <code>src/app/shared/styles/_tokens.scss</code> (CSS vars, cores, spacing, radius)</li>
+      <li><strong>Layout</strong>: <code>src/app/shared/styles/_layout.scss</code> (ex.: <code>.page</code>)</li>
+      <li><strong>Componentes</strong>: <code>src/app/shared/styles/_components.scss</code> (ex.: <code>.stats-grid</code>, <code>.btn-icon</code>)</li>
+      <li><strong>Globais</strong>: <code>src/styles.scss</code> (overrides Bootstrap, focus, animações <code>.fade-in</code>)</li>
+    </ul>
+    <details>
+      <summary><b>Ícones e botões</b></summary>
       <ul>
-        <li><code>SERVER_PORT</code> (default: 8080)</li>
-        <li><code>DB_HOST</code>, <code>DB_PORT</code>, <code>DB_NAME</code>, <code>DB_USER</code>, <code>DB_PASSWORD</code></li>
-        <li><code>ZIPKIN_URL</code> (default: <code>http://localhost:9411/api/v2/spans</code>)</li>
-        <li><code>API_JWT_SECRET</code>, <code>API_JWT_ISSUER</code>, <code>API_JWT_TTL</code></li>
+        <li>Ícones: Bootstrap Icons (<code>bootstrap-icons</code>)</li>
+        <li>Botões: variantes Bootstrap (<code>.btn-primary</code>, <code>.btn-outline-secondary</code>, etc.) + <code>.btn-icon</code> (icon-only)</li>
       </ul>
-      <details>
-        <summary><b>Se a porta 8080 estiver em uso</b></summary>
-        <pre><code class="language-powershell">$env:SERVER_PORT=8081; ./mvnw spring-boot:run</code></pre>
-      </details>
-    </section>
-    <section id="seguranca">
-      <h2>🔐 Segurança (JWT / Roles)</h2>
-      <p>
-        Todos os endpoints em <code>/api/**</code> exigem autenticação JWT, <strong>exceto</strong>:
-        <code>/api/auth/register</code>, <code>/api/auth/login</code> e rotas do Swagger (<code>/swagger-ui</code>, <code>/v3/api-docs</code>).
-      </p>
-      <h3>Roles</h3>
+    </details>
+  </section>
+
+  <section id="formatos">
+    <h2>📐 Formatos (Datas e Filtros)</h2>
+    <h3>Datas</h3>
+    <ul>
+      <li>Persistência atual (mock): <code>workshop.dataRealizacao</code> em formato ISO <code>yyyy-MM-dd</code> (ex.: <code>2024-02-10</code>).</li>
+      <li>Filtro de data: o input HTML <code>type="date"</code> retorna <code>yyyy-MM-dd</code>, compatível com o formato do mock.</li>
+      <li>Exibição: formatação via <code>Intl.DateTimeFormat</code> (pt-BR) em <code>src/app/core/utils/date-format.ts</code>.</li>
+    </ul>
+    <h3>Filtros</h3>
+    <ul>
+      <li><code>colaborador</code>: contém (case-insensitive)</li>
+      <li><code>workshop</code>: contém em <code>nome</code> + <code>descricao</code> (case-insensitive)</li>
+      <li><code>data</code>: igualdade exata (string ISO)</li>
+    </ul>
+  </section>
+
+  <section id="padroes-codigo">
+    <h2>🧠 Padrões de Código</h2>
+    <ul>
+      <li><strong>Standalone</strong>: pages e UI components são <code>standalone: true</code></li>
+      <li><strong>OnPush</strong>: <code>ChangeDetectionStrategy.OnPush</code> por padrão</li>
+      <li><strong>State/ViewModel</strong>: pages expõem <code>vm$</code> e consomem com <code>async</code> pipe</li>
+      <li><strong>Sem subscribe manual</strong>: composição via RxJS (<code>combineLatest</code>, <code>map</code>, <code>debounceTime</code>)</li>
+      <li><strong>Utilitários</strong>: formatação de data em <code>src/app/core/utils/date-format.ts</code></li>
+    </ul>
+  </section>
+
+  <section id="dados">
+    <h2>🗃️ Dados &amp; Integração</h2>
+    <p>
+      Hoje os dados são <strong>mockados</strong> (para UI/fluxos) e expostos via services “app-wide” em
+      <code>src/app/core/data-access</code>.
+    </p>
+    <ul>
+      <li>Mock principal: <code>src/app/core/data-access/mocks/atas.mock.ts</code></li>
+      <li>Services: <code>src/app/core/data-access/ata.service.ts</code>, <code>workshop.service.ts</code>, <code>colaborador.service.ts</code></li>
+    </ul>
+    <details>
+      <summary><b>Como os mocks funcionam hoje (padrões usados)</b></summary>
       <ul>
-        <li><code>ADMIN</code> — acesso total</li>
-        <li><code>CREATOR</code> — escrita (criar/alterar)</li>
-        <li><code>READER</code> — leitura (consultas)</li>
+        <li><strong>Fonte de verdade</strong>: <code>ATAS_MOCK</code> (lista de atas) em <code>src/app/core/data-access/mocks/atas.mock.ts</code>.</li>
+        <li><strong>Cache in-memory</strong>: services usam <code>shareReplay</code> para evitar recomputar/reemitir em cada subscribe.</li>
+        <li><strong>Derivação</strong>: <code>WorkshopService</code> e <code>ColaboradorService</code> derivam seus dados a partir de <code>AtaService</code> (sem duplicar fonte de dados).</li>
+        <li><strong>Observables</strong>: API pública dos services é reativa (<code>getAll(): Observable&lt;readonly T[]&gt;</code>).</li>
       </ul>
-      <p>
-        Por padrão, um usuário registrado recebe as roles: <code>CREATOR</code> e <code>READER</code>.
-      </p>
-      <h3>Como obter token</h3>
+    </details>
+    <details>
+      <summary><b>Como plugar com uma API real (guia curto)</b></summary>
       <ol>
-        <li>Registrar: <code>POST /api/auth/register</code></li>
-        <li>Login: <code>POST /api/auth/login</code></li>
+        <li>Trocar os services do <code>core/data-access</code> para usar <code>HttpClient</code> (mantendo a mesma API pública: <code>getAll()</code>).</li>
+        <li>Criar um <code>environment</code> com <code>API_URL</code> e centralizar rotas.</li>
+        <li>Manter models TS em <code>shared/domain</code> e mapear DTOs (não acoplar UI ao contrato HTTP diretamente).</li>
       </ol>
-      <p>Enviar o token em:</p>
-      <pre><code class="language-http">Authorization: Bearer &lt;token&gt;</code></pre>
-      <p>
-        No Swagger UI, clique em <strong>Authorize</strong> e cole apenas o token (sem o prefixo <code>Bearer</code>).
-      </p>
-    </section>
-    <section id="endpoints">
-      <h2>📦 Endpoints (Swagger / Exemplos)</h2>
-      <p>
-        Swagger UI: <code>http://localhost:8080/swagger-ui.html</code>
-      </p>
-      <h3>Resumo</h3>
-      <table>
-        <thead>
-          <tr>
-            <th align="left">Método</th>
-            <th align="left">Rota</th>
-            <th align="left">Auth</th>
-            <th align="left">Role</th>
-            <th align="left">Descrição</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>POST</code></td>
-            <td><code>/api/auth/register</code></td>
-            <td>Não</td>
-            <td>-</td>
-            <td>Registrar usuário</td>
-          </tr>
-          <tr>
-            <td><code>POST</code></td>
-            <td><code>/api/auth/login</code></td>
-            <td>Não</td>
-            <td>-</td>
-            <td>Autenticar e obter JWT</td>
-          </tr>
-          <tr>
-            <td><code>POST</code></td>
-            <td><code>/api/workshops</code></td>
-            <td>Sim</td>
-            <td><code>CREATOR</code>/<code>ADMIN</code></td>
-            <td>Cadastrar workshop</td>
-          </tr>
-          <tr>
-            <td><code>POST</code></td>
-            <td><code>/api/colaboradores</code></td>
-            <td>Sim</td>
-            <td><code>CREATOR</code>/<code>ADMIN</code></td>
-            <td>Cadastrar colaborador</td>
-          </tr>
-          <tr>
-            <td><code>POST</code></td>
-            <td><code>/api/atas</code></td>
-            <td>Sim</td>
-            <td><code>CREATOR</code>/<code>ADMIN</code></td>
-            <td>Criar ata (1 por workshop)</td>
-          </tr>
-          <tr>
-            <td><code>PUT</code></td>
-            <td><code>/api/workshops/{workshopId}/atas/{ataId}</code></td>
-            <td>Sim</td>
-            <td><code>CREATOR</code>/<code>ADMIN</code></td>
-            <td>Adicionar colaborador na ata</td>
-          </tr>
-          <tr>
-            <td><code>DELETE</code></td>
-            <td><code>/api/atas/{ataId}/colaboradores/{colaboradorId}</code></td>
-            <td>Sim</td>
-            <td><code>CREATOR</code>/<code>ADMIN</code></td>
-            <td>Remover colaborador da ata</td>
-          </tr>
-          <tr>
-            <td><code>GET</code></td>
-            <td><code>/api/atas</code></td>
-            <td>Sim</td>
-            <td><code>READER</code>/<code>CREATOR</code>/<code>ADMIN</code></td>
-            <td>Listar participações (com filtros)</td>
-          </tr>
-        </tbody>
-      </table>
-      <h3>Exemplos (curl)</h3>
-      <details open>
-        <summary><b>1) Registrar + login</b></summary>
-        <pre><code class="language-bash">curl -s -H "Content-Type: application/json" \
-  -d '{ "nome": "Ana Silva", "email": "ana@fast.com", "senha": "Senha@123" }' \
-  http://localhost:8080/api/auth/register
+    </details>
+  </section>
 
-TOKEN=$(curl -s -H "Content-Type: application/json" \
-  -d '{ "email": "ana@fast.com", "senha": "Senha@123" }' \
-  http://localhost:8080/api/auth/login | jq -r .accessToken)
-</code></pre>
-      </details>
-      <details>
-        <summary><b>2) Criar workshop + colaborador + ata</b></summary>
-        <pre><code class="language-bash">curl -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-  -d '{ "nome": "Workshop Spring", "dataRealizacao": "20/01/2026", "descricao": "Conteúdo do workshop..." }' \
-  http://localhost:8080/api/workshops
+  <section id="como-rodar">
+    <h2>🚀 Como Rodar</h2>
+    <h3>Pré-requisitos</h3>
+    <ul>
+      <li>Node.js (recomendado LTS) + npm</li>
+    </ul>
+    <h3>Instalar</h3>
+    <pre><code class="language-bash">npm ci</code></pre>
+    <h3>Rodar em dev</h3>
+    <pre><code class="language-bash">npm start</code></pre>
+    <p>Abra: <code>http://localhost:4200</code></p>
+    <h3>Build</h3>
+    <pre><code class="language-bash">npm run build</code></pre>
+    <details>
+      <summary><b>Outros scripts úteis</b></summary>
+      <pre><code class="language-bash"># build em modo watch
+npm run watch</code></pre>
+    </details>
+  </section>
 
-curl -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-  -d '{ "nome": "Ana Silva" }' \
-  http://localhost:8080/api/colaboradores
+  <section id="testes">
+    <h2>🧪 Testes</h2>
+    <p>O projeto usa o runner padrão do Angular 21 (Vitest via <code>ng test</code>).</p>
+    <pre><code class="language-bash">npm test</code></pre>
+  </section>
 
-curl -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-  -d '{ "workshopId": 1, "colaboradoresIds": [1] }' \
-  http://localhost:8080/api/atas
-</code></pre>
-      </details>
-      <details>
-        <summary><b>3) Adicionar / remover colaborador na ata</b></summary>
-        <pre><code class="language-bash">curl -H "Authorization: Bearer $TOKEN" -X PUT -H "Content-Type: application/json" \
-  -d '{ "colaboradorId": 2 }' \
-  http://localhost:8080/api/workshops/1/atas/1
-
-curl -H "Authorization: Bearer $TOKEN" -X DELETE \
-  http://localhost:8080/api/atas/1/colaboradores/2
-</code></pre>
-      </details>
-      <details>
-        <summary><b>4) Listar participações (com filtros)</b></summary>
-        <pre><code class="language-bash"># lista geral
-curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/api/atas
-
-# filtro por nome do workshop (contém, case-insensitive)
-curl -H "Authorization: Bearer $TOKEN" "http://localhost:8080/api/atas?workshopNome=spring"
-
-# filtro por data de realização (dd/MM/yyyy; também aceita yyyy-MM-dd)
-curl -H "Authorization: Bearer $TOKEN" "http://localhost:8080/api/atas?data=20/01/2026"
-</code></pre>
-      </details>
-    </section>
-    <section id="formatos">
-      <h2>📐 Formatos (Datas, Ordenação e Filtros)</h2>
-      <h3>Datas</h3>
-      <ul>
-        <li><strong>JSON</strong> (<code>dataRealizacao</code>): <code>dd/MM/yyyy</code> (ex.: <code>20/01/2026</code>)</li>
-        <li><strong>Query param</strong> (<code>data</code> em <code>GET /api/atas</code>): <code>dd/MM/yyyy</code> (compatível com <code>yyyy-MM-dd</code>)</li>
-        <li><strong>Timestamp em erros</strong>: <code>dd/MM/yyyy HH:mm:ssXXX</code> (ex.: <code>20/01/2026 21:55:35-03:00</code>)</li>
-      </ul>
-      <h3>Filtros e ordenação em <code>GET /api/atas</code></h3>
-      <ul>
-        <li>Filtros opcionais: <code>workshopNome</code> (contém, case-insensitive) e <code>data</code> (igualdade exata de data).</li>
-        <li>Combinação: quando ambos são enviados, aplica <strong>AND</strong>.</li>
-        <li>Ordenação do resultado: <strong>colaborador.nome ASC</strong>, depois <strong>workshop.dataRealizacao ASC</strong>, depois <strong>workshop.nome ASC</strong>.</li>
-      </ul>
-    </section>
-    <section id="tratamento-erros">
-      <h2>🚧 Tratamento de Erros</h2>
-      <p>
-        A API padroniza erros em <code>ErrorResponse</code> e mapeia exceções de forma consistente
-        (<code>400</code> validação/JSON, <code>401/403</code> segurança, <code>404</code> não encontrado, <code>409</code> conflito, <code>500</code> erro interno).
-      </p>
-      <h3>Formato do erro</h3>
-      <pre><code class="language-json">{
-  "exceptionId": "9d6e08ae-9d72-4e59-8f0a-0c49f3d5b5f2",
-  "timestamp": "20/01/2026 21:55:35-03:00",
-  "status": 400,
-  "errorCode": "VAL_001_VALIDATION_ERROR",
-  "message": "Erro de validação: nome - nome deve ter entre 2 e 120 caracteres",
-  "category": "VALIDATION",
-  "severity": "LOW",
-  "retryable": false,
-  "path": "/api/colaboradores",
-  "context": {
-    "errors": [
-      { "field": "nome", "message": "nome deve ter entre 2 e 120 caracteres" }
-    ]
-  }
-}</code></pre>
-    </section>
-    <section id="observabilidade">
-      <h2>📈 Observabilidade (Actuator / Prometheus / Zipkin)</h2>
-      <h3>URLs úteis</h3>
-      <table>
-        <thead>
-          <tr>
-            <th align="left">Ferramenta</th>
-            <th align="left">URL</th>
-            <th align="left">Obs.</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Swagger UI</td>
-            <td><code>http://localhost:8080/swagger-ui.html</code></td>
-            <td>Documentação + testes dos endpoints</td>
-          </tr>
-          <tr>
-            <td>Health</td>
-            <td><code>http://localhost:8080/actuator/health</code></td>
-            <td>Inclui detalhes e health checks custom</td>
-          </tr>
-          <tr>
-            <td>Prometheus</td>
-            <td><code>http://localhost:8080/actuator/prometheus</code></td>
-            <td>Endpoint scrape</td>
-          </tr>
-          <tr>
-            <td>Grafana</td>
-            <td><code>http://localhost:3000</code></td>
-            <td>admin/admin (quando usar docker-compose-monitoring)</td>
-          </tr>
-          <tr>
-            <td>Zipkin</td>
-            <td><code>http://localhost:9411</code></td>
-            <td>Tracing distribuído</td>
-          </tr>
-        </tbody>
-      </table>
-      <h3>Métricas customizadas (Micrometer)</h3>
-      <ul>
-        <li><code>atas.criadas.total</code> — total de atas criadas</li>
-        <li><code>auth.login.total{status="success|failed"}</code> — tentativas de login</li>
-        <li><code>business.operation.duration{operation="..."}</code> — duração de operações</li>
-      </ul>
-      <details>
-        <summary><b>PromQL – exemplos úteis</b></summary>
-        <pre><code class="language-promql"># Taxa de criação de atas por minuto
-rate(atas_criadas_total[5m]) * 60
-
-# P95 de latência HTTP
-histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket[5m])) by (uri, le))
-</code></pre>
-      </details>
-    </section>
-    <section id="testes">
-      <h2>🧪 Testes</h2>
-      <p>
-        A suíte combina testes unitários, integração (Testcontainers) e cenários específicos (performance/segurança).
-      </p>
-      <p><strong>Tipos incluídos</strong>:</p>
-      <ul>
-        <li><strong>Unitários</strong>: valida regras e casos de uso em isolamento.</li>
-        <li><strong>Integração</strong>: valida a API e persistência usando <strong>Testcontainers</strong>.</li>
-        <li><strong>Arquitetura</strong>: valida regras de codificação e camadas (ArchUnit) — <code>CodingRulesArchTest</code> e <code>HexagonalArchitectureArchTest</code>.</li>
-      </ul>
-      <pre><code class="language-bash"># Todos os testes
-./mvnw clean test
-
-# Apenas unitários
-./mvnw test -Dtest="*UseCaseImplTest"
-
-# Apenas integração (Testcontainers)
-./mvnw test -Dtest="*IntegrationTest"
-
-# Apenas arquitetura (ArchUnit)
-./mvnw test -Dtest="*ArchTest"
-</code></pre>
-    </section>
-    <section id="boas-praticas">
-      <h2>🏅 Boas Práticas &amp; Padrões</h2>
-      <ul>
-        <li><strong>Clean-ish Architecture</strong>: separação entre presentation / application / domain / infrastructure.</li>
-        <li><strong>Ports &amp; Adapters</strong>: repositórios e serviços expostos como <code>port/output</code> e implementados em adapters.</li>
-        <li><strong>Validação robusta</strong>: Bean Validation + anotações customizadas por campo e DTO.</li>
-        <li><strong>MapStruct</strong>: mapeamento declarativo (DTOs/Commands/Domain) com <code>componentModel="spring"</code>.</li>
-        <li><strong>Erros padronizados</strong>: categorias e códigos consistentes.</li>
-        <li><strong>Observabilidade</strong>: Actuator + métricas e tracing para depuração e SLA.</li>
-        <li><strong>Banco versionado</strong>: Flyway + <code>ddl-auto=validate</code> para evitar drift de schema.</li>
-        <li><strong>Segurança por método</strong>: <code>@PreAuthorize</code> por endpoint (role-based).</li>
-      </ul>
-    </section>
-    <section id="licenca-autor">
+  <section id="contratos">
+    <h2>📏 Contratos (anti-despadronização)</h2>
+    <ul>
+      <li><code>shared</code> não importa <code>features</code> (nunca)</li>
+      <li><code>features</code> não importam outras <code>features</code> (use <code>core</code>/<code>shared</code>)</li>
+      <li><code>shared/domain</code> e <code>features/*/domain</code> são TS puro (sem Angular)</li>
+      <li>Toda page deve usar <code>app-page-header</code> no topo</li>
+      <li>Filtros: usar <code>app-filters-bar</code> (sem filtros por feature)</li>
+      <li>Tabelas: usar <code>app-data-table</code> + <code>table.app-data-table__table</code></li>
+      <li>Atas: usar apenas <code>app-ata-table</code> (sem duplicar tabelas por feature)</li>
+      <li>Estados: usar components de state em <code>shared/ui</code></li>
+      <li>Layout: padding/recuo esquerdo é responsabilidade do <code>.page</code> (proibido em pages)</li>
+      <li>Padrões globais de SCSS ficam em <code>shared/styles</code> (não em <code>pages/**/styles</code>)</li>
+    </ul>
+  </section>
+ <section id="licenca-autor">
       <h2 align="center">💻 Autor</h2>
       <div align="center">
   <img
@@ -601,6 +326,4 @@ histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket[5m])) by (
         Este projeto está licenciado sob a MIT License. Veja o arquivo <a href="LICENSE">LICENSE</a> para mais detalhes.
       </p>
     </section>
-  </main>
-</body>
-
+</main>
