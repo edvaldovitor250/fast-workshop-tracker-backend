@@ -1,19 +1,10 @@
 package br.com.fast.workshoptracker.presentation.rest.error;
 
-import br.com.fast.workshoptracker.presentation.rest.dto.response.ErrorResponse;
-import br.com.fast.workshoptracker.domain.exception.Exceptions;
-import br.com.fast.workshoptracker.domain.exception.codes.AuthErrorCode;
-import br.com.fast.workshoptracker.domain.exception.codes.BusinessErrorCode;
-import br.com.fast.workshoptracker.domain.exception.codes.ErrorCategory;
-import br.com.fast.workshoptracker.domain.exception.codes.TechnicalErrorCode;
-import br.com.fast.workshoptracker.domain.exception.codes.ValidationErrorCode;
-import br.com.fast.workshoptracker.domain.exception.core.BaseExpeditiException;
-import br.com.fast.workshoptracker.domain.exception.domain.BusinessException;
-import br.com.fast.workshoptracker.domain.exception.technical.TechnicalException;
-import br.com.fast.workshoptracker.domain.exception.util.ExceptionUtils;
-import br.com.fast.workshoptracker.domain.exception.validation.ValidationException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ConstraintViolationException;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -25,11 +16,22 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import br.com.fast.workshoptracker.domain.exception.Exceptions;
+import br.com.fast.workshoptracker.domain.exception.codes.AuthErrorCode;
+import br.com.fast.workshoptracker.domain.exception.codes.BusinessErrorCode;
+import br.com.fast.workshoptracker.domain.exception.codes.ErrorCategory;
+import br.com.fast.workshoptracker.domain.exception.codes.TechnicalErrorCode;
+import br.com.fast.workshoptracker.domain.exception.codes.ValidationErrorCode;
+import br.com.fast.workshoptracker.domain.exception.core.BaseExpeditiException;
+import br.com.fast.workshoptracker.domain.exception.domain.BusinessException;
+import br.com.fast.workshoptracker.domain.exception.technical.TechnicalException;
+import br.com.fast.workshoptracker.domain.exception.util.ExceptionUtils;
+import br.com.fast.workshoptracker.domain.exception.validation.ValidationException;
+import br.com.fast.workshoptracker.presentation.rest.dto.response.ErrorResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
@@ -121,6 +123,12 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	public ResponseEntity<ErrorResponse> handleDataIntegrity(DataIntegrityViolationException ex, HttpServletRequest request) {
 		BusinessException be = Exceptions.dataIntegrity("Conflito de dados", ex);
+		return handleBase(be, request);
+	}
+
+	@ExceptionHandler(NoResourceFoundException.class)
+	public ResponseEntity<ErrorResponse> handleNoResource(NoResourceFoundException ex, HttpServletRequest request) {
+		var be = Exceptions.notFound("Recurso não encontrado", Map.of());
 		return handleBase(be, request);
 	}
 
