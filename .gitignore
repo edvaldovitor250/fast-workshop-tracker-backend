@@ -1,13 +1,192 @@
-target/
-env/
+# =========================
+# Spring Boot / Java
+# =========================
+
+# Compiled class files
+*.class
+
+# Logs
 *.log
-.DS_Store
-.idea/
-.vscode/
-*.iml
-dist/
-build/
-*.env
-coverage/
 logs/
+*.out
+
+# Spring Boot
+*.pid
+*.seed
+*.pid.lock
+
+# JVM crash logs
+hs_err_pid*
+replay_pid*
+
+# =========================
+# Build directories
+# =========================
+
+# Maven
 target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# General
+out/
+bin/
+
+# =========================
+# Dependency / packaging
+# =========================
+
+*.jar
+*.war
+*.ear
+
+# Permita manter wrapper jars
+!*.jar.original
+
+# =========================
+# IDEs and editors
+# =========================
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Eclipse / STS
+.apt_generated/
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+
+# VS Code
+.vscode/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# =========================
+# OS files
+# =========================
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# =========================
+# Environment and secrets
+# =========================
+
+# dotenv files
+.env
+.env.*
+!.env.example
+
+# Local config overrides
+application-local.properties
+application-local.yml
+application-local.yaml
+
+application-dev.properties
+application-dev.yml
+application-dev.yaml
+
+# Optional: ignore personal override configs
+bootstrap-local.properties
+bootstrap-local.yml
+bootstrap-local.yaml
+
+# =========================
+# Test / coverage
+# =========================
+
+# JaCoCo
+jacoco.exec
+jacoco/
+*.exec
+
+# Test reports
+surefire-reports/
+failsafe-reports/
+
+# =========================
+# Temporary files
+# =========================
+
+tmp/
+temp/
+*.tmp
+*.swp
+*.swo
+
+# =========================
+# Database local files
+# =========================
+
+# H2 database files
+*.mv.db
+*.trace.db
+*.h2.db
+
+# SQLite
+*.sqlite
+*.sqlite3
+
+# =========================
+# Docker / containers
+# =========================
+
+# Override files often used locally
+docker-compose.override.yml
+
+# =========================
+# Node frontend inside Spring Boot project
+# =========================
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Frontend build outputs
+dist/
+coverage/
+
+# =========================
+# Generated files
+# =========================
+
+# Annotation processors
+generated/
+src/main/generated/
+src/test/generated/
+
+# =========================
+# Keep important wrapper files
+# =========================
+
+!.mvn/wrapper/maven-wrapper.properties
+!mvnw
+!mvnw.cmd
+!gradlew
+!gradlew.bat
+!gradle/wrapper/gradle-wrapper.properties
